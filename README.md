@@ -1,4 +1,4 @@
-# My Universal React Project
+# My Simple Crypto Dashboard Project
 
 <p>
   <!-- iOS -->
