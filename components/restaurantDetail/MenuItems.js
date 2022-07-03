@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { Divider } from "react-native-elements";
+import { Divider } from "native-base";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";

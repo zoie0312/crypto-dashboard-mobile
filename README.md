@@ -1,4 +1,4 @@
-# My Simple Crypto Dashboard Project
+# My Simple Crypto Dashboard Mobile App
 
 <p>
   <!-- iOS -->

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Divider } from "react-native-elements";
+import { Divider } from "native-base";
 import About from "../components/restaurantDetail/About";
 import MenuItems from "../components/restaurantDetail/MenuItems";
 import ViewCart from "../components/restaurantDetail/ViewCart";
