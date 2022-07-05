@@ -48,7 +48,7 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={{ backgroundColor: "#eee", flex: 1 }}>
       <View >
-        <Header/>
+        <Header navigation={navigation}/>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <MainSection/>
@@ -61,7 +61,7 @@ export default function Home({ navigation }) {
         /> */}
       </ScrollView>
       <Divider width={1} />
-      <BottomTabs />
+      <BottomTabs navigation={navigation}/>
     </SafeAreaView>
   );
 }
