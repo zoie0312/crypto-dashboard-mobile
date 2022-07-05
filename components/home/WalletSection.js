@@ -63,13 +63,7 @@ const AssetCard = (props) => {
             w="24" 
             justifyContent="space-between" 
             shadow={2}
-            bg={{
-                linearGradient: {
-                  colors: ["lightBlue.200", "violet.600"],
-                  start: [0, 0],
-                  end: [0, 1]
-                }
-            }}
+            bg='trueGray.200'
         >
             <HStack  alignItems="center" >
                 <Image

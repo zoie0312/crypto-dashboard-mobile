@@ -3,13 +3,10 @@ import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Divider } from "native-base";
 import BottomTabs from "../components/home/BottomTabs";
-import Categories from "../components/home/Categories";
-import HeaderTabs from "../components/home/HeaderTabs";
 import Header from '../components/home/Header';
 import RestaurantItems, {
   localRestaurants,
 } from "../components/home/RestaurantItems";
-import SearchBar from "../components/home/SearchBar";
 import MainSection from "../components/home/MainSection";
 import NFTSection from "../components/home/NFTSection";
 import WalletSection from "../components/home/WalletSection";
@@ -51,8 +48,6 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={{ backgroundColor: "#eee", flex: 1 }}>
       <View >
-        {/* <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        <SearchBar cityHandler={setCity} /> */}
         <Header/>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>

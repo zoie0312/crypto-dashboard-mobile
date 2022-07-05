@@ -11,7 +11,7 @@ const SectionHeader = (props) => {
     const {title, value} = props;
     return (
         <HStack  justifyContent="space-between" px="4" alignItems="center">
-            <Text fontSize="lg" >{title}: {value} USD</Text>
+            <Text fontSize="md" fontWeight="500">{title}: {value} USD</Text>
             <Pressable onPress={() => console.log('expand icon pressed')}>
                 <ChevronRightIcon size='lg'/>
             </Pressable>

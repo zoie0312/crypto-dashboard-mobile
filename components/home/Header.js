@@ -1,28 +1,17 @@
 import React from 'react'
-import { HStack, Center, Avatar, Text } from 'native-base'
+import { HStack, Center, Text, ThreeDotsIcon } from 'native-base'
 
 const Header = () => {
   return (
-    <HStack  alignItems="center" justifyContent="space-between" px="3" >
-        <Text fontSize="xl" fontWeight="semibold">My Portfolio</Text>
+    <HStack  alignItems="center" justifyContent="space-between" pr="5" pl="3" my="3">
+        <Text fontSize="3xl" fontWeight='500'>My Portfolio</Text>
         
-        <Center size="12">
-            <Avatar
-                size="md" 
-                source={{
-                    uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'
-                }}
-                key={'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'}
-            >
-                SS
-            </Avatar>
-            
+        <Center size="8" bg='trueGray.200' borderRadius="20">
+            <ThreeDotsIcon  size='sm' />
         </Center>
         
     </HStack>
   )
 }
-
-   
 
 export default Header
