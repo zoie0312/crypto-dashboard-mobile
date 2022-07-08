@@ -1,59 +1,69 @@
-//import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
-import { 
-    HStack, 
-    Text, 
-    Center, 
-    ChevronRightIcon, 
+import {
+    HStack,
+    Text,
+    Center,
     VStack,
-    Box
- } from 'native-base';
- import { LineChart } from "react-native-gifted-charts";
-import SectionHeader from './SectionHeader' 
+    Box,
+    Heading,
+} from 'native-base'
+import { PieChart } from 'react-native-gifted-charts'
 
-const chartData = [
-  {value: 50000, label: 'Jan'}, 
-  {value: 40000, }, 
-  {value: 44000, label: 'Apr'}, 
-  {value: 40000, }, 
-  {value: 35000, label: 'June'}
-];
+const pieChartData = [
+    { value: 1000, color: '#e68A00', text: '33%' },
+    { value: 2000, color: '#1F7A1F', text: '67%' },
+]
 
 const MainSection = () => {
-  return (
-    <VStack  mt="4">
-        <SectionHeader
-            title='Total Value'
-            value='3,500'
-        />
-        <Box px="4" pt="3" rounded="lg" >
-          
-          <LineChart
-            areaChart
-            curved
-            hideDataPoints
-            spacing={74}
-            width={300}
-            initialSpacing={0}
-            yAxisThickness={0}
-            rulesType="solid"
-            yAxisOffset={28000}
-            noOfSections={4}
-            maxValue={28000}
-            stepValue={7000}
-            data={chartData}
-            startFillColor="rgb(46, 217, 255)"
-            startOpacity={0.8}
-            endFillColor="rgb(203, 241, 250)"
-            endOpacity={0.3}
-          />
-        </Box> 
-            
-    </VStack>
-    
-    
-    
-  )
+    return (
+        <VStack px={4}>
+            <HStack alignItems={'center'} justifyContent="space-between">
+                <Heading italic size='2xl'>$3,500.40</Heading>
+                <VStack>
+                    <HStack alignItems={'center'} space="2" justifyContent="space-between">
+                        <Text fontSize="sm" color="trueGray.400">Wallet</Text>
+                        <Text fontSize="md">$2,000.00</Text>
+                    </HStack>
+                    <HStack alignItems={'center'} space="2" justifyContent="space-between">
+                        <Text fontSize="sm" color="trueGray.400">NFTs Worth</Text>
+                        <Text fontSize="md">$1,500.00</Text>
+                    </HStack>
+                </VStack>
+                
+            </HStack>
+            <HStack px='3' my='2' rounded="lg" alignItems={'center'}>
+                <PieChart
+                    data={pieChartData}
+                    showText
+                    textColor="black"
+                    radius={50}
+                />
+                <HStack justifyContent="space-around" flex={1} p="2" ml="5">
+                    <HStack space={2} alignItems="center">
+                        <Box
+                            backgroundColor={'#1F7A1F'}
+                            size="3"
+                            borderRadius="6"
+                        />
+                        <Text fontSize="lg" color="trueGray.400">
+                            Wallet
+                        </Text>
+                    </HStack>
+                    <HStack space={2} alignItems="center">
+                        <Box
+                            backgroundColor={'#e68A00'}
+                            size="3"
+                            borderRadius="6"
+                        />
+                        <Text fontSize="lg" color="trueGray.400">
+                            NFTs
+                        </Text>
+                    </HStack>
+                </HStack>
+            </HStack>
+        </VStack>
+    )
 }
 
 export default MainSection
