@@ -7,7 +7,8 @@ import {
     VStack,
     Box,
     Image,
-    ScrollView
+    ScrollView,
+    Divider
  } from 'native-base';
 import SectionHeader from './SectionHeader' 
 
@@ -86,12 +87,12 @@ const AssetCard = (props) => {
 
 const WalletSection = () => {
   return (
-    <VStack  mt="5">
-        <SectionHeader
+    <VStack  flex={1} mt="5" bg={'white'}>
+        {/* <SectionHeader
             title='Wallet'
             value='20,000'
-        />
-        <ScrollView pl="3" showsHorizontalScrollIndicator={false} horizontal={true}>
+        /> */}
+        {/* <ScrollView showsVerticalScrollIndicator={false} >
             {
                 assetData.map((data, idx) => (
                     <AssetCard
@@ -103,7 +104,12 @@ const WalletSection = () => {
                     />
                 ))
             }
-        </ScrollView>
+        </ScrollView> */}
+        <VStack rounded={'md'}>
+            <Text fontSize={'md'}>0x222222221118679dddaafh</Text>
+            <Divider width={'90%'}/>
+
+        </VStack>
             
     </VStack>
   )

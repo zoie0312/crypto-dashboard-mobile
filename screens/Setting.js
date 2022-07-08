@@ -80,6 +80,8 @@ const Setting = ({ navigation }) => {
     const [hasPermission, setHasPermission] = useState(null);
     const [walletAddresses, dispatch] = useReducer(addressReducer, addressData);
 
+    console.log('Setting: ');
+
     const goBack = () => {setIsScanning(false)}
 
     useEffect(() => {
@@ -89,7 +91,7 @@ const Setting = ({ navigation }) => {
         })();
       }, []);
        
-    console.log('walletAddresses= ', walletAddresses);
+    //console.log('walletAddresses= ', walletAddresses);
      
     return (
         <SafeAreaView style={{ backgroundColor: '#eee', flex: 1 }}>

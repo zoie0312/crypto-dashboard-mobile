@@ -55,15 +55,12 @@ export default function Home({ navigation }) {
         <Header navigation={navigation}/>
       </View>
       <MainSection/>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <WalletSection/>
+      {/* <ScrollView showsVerticalScrollIndicator={false}>
         <NFTSection/>
         <WalletSection/>
-        {/* <Categories />
-        <RestaurantItems
-          restaurantData={restaurantData}
-          navigation={navigation}
-        /> */}
-      </ScrollView>
+        
+      </ScrollView> */}
       <Divider width={1} />
       <BottomTabs navigation={navigation}/>
     </SafeAreaView>
