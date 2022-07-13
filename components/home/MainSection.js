@@ -32,7 +32,7 @@ const MainSection = () => {
                 </VStack>
                 
             </HStack>
-            <HStack px='3' my='2' rounded="lg" alignItems={'center'}>
+            <HStack px='3' mt='2' rounded="lg" alignItems={'center'}>
                 <PieChart
                     data={pieChartData}
                     showText
