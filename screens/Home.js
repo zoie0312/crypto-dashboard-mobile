@@ -11,48 +11,20 @@ import MainSection from '../components/home/MainSection'
 import NFTSection from '../components/home/NFTSection'
 import WalletSection from '../components/home/WalletSection'
 import { CryptoPriceContext } from '../context/CryptoPriceContext'
+import { PortfolioContext } from '../context/PortfolioContext'
+import {walletData} from '../DummyData'
 
 const YELP_API_KEY =
     'bdRJutLhFAQJ36t7b89CWjHFBU4OKzjt9wvZzcY-nkgmvTqlNMjZWV1eG7iBQ9R74SyfxRg9LWnBAkZY06BtAZAe4d2dfX-2vuX8a1l5V7foctHfX9UKEyoM5ts3YXYx'
 
-const walletData = ['0x222222221118679dddaafh', '0x333333333338679dddaafh']
-
 export default function Home({ navigation }) {
-    const [restaurantData, setRestaurantData] = useState(localRestaurants)
-    const [city, setCity] = useState('San Francisco')
-    const [activeTab, setActiveTab] = useState('Delivery')
     //const cryptoPrices = useContext(CryptoPriceContext);
-
-    //console.log('Home: latest crypto prices= ', cryptoPrices);
-
-    const getRestaurantsFromYelp = () => {
-        const yelpUrl = `https://api.yelp.com/v3/businesses/search?term=restaurants&location=${city}`
-
-        const apiOptions = {
-            headers: {
-                Authorization: `Bearer ${YELP_API_KEY}`,
-            },
-        }
-
-        return fetch(yelpUrl, apiOptions)
-            .then((res) => res.json())
-            .then((json) => {
-                console.log('json ', json)
-                console.log(json.businesses)
-                json.businesses &&
-                    setRestaurantData(
-                        json.businesses.filter((business) =>
-                            business.transactions.includes(
-                                activeTab.toLowerCase()
-                            )
-                        )
-                    )
-            })
-    }
-
-    useEffect(() => {
-        getRestaurantsFromYelp()
-    }, [city, activeTab])
+    const { wallets } = useContext(PortfolioContext);
+    const walletAddresses = wallets.map(wallet => ({
+        address: wallet.address,
+        chain: wallet.chain
+    }));
+    console.log('Home: wallet addresses= ', walletAddresses);
 
     return (
         <SafeAreaView backgroundColor="#e6f7ff" flex={1}>
@@ -63,10 +35,10 @@ export default function Home({ navigation }) {
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
-                    walletData.map((address) => (
+                    walletAddresses.map((wallet) => (
                         <WalletSection 
-                            key={address}
-                            address={address} 
+                            key={wallet.address}
+                            wallet={wallet} 
                         />
                     ))
                 }

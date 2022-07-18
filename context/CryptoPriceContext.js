@@ -2,8 +2,9 @@ import {createContext, useReducer, useEffect} from 'react'
 import useCryptoPrices from '../hooks/useCryptoPrices';
 
 const InitialState = {
-    btc: 0, 
-    eth: 0
+    BTC: {USD: 1}, 
+    ETH: {USD: 1},
+    FTT: {USD: 1},
 };
 
 // const InitialContext = {
@@ -15,7 +16,7 @@ const InitialState = {
 const reducer = (state, action) => {
     const nextState = {...state};
 
-    switch (action.payload) {
+    switch (action.type) {
         case 'UPDATE_PRICE':
             nextState.btc = action.payload;
             break;
@@ -32,7 +33,7 @@ export const CryptoPriceContext = createContext(InitialState);
 export const CryptoPriceContextProvider = (props) => {
     //const [state, dispatch] = useReducer(reducer, InitialState);
     const cryptoPrices = useCryptoPrices({initialData: InitialState, timerCount: 3});
-
+    console.log('CryptoPriceContext cryptoPrices= ', cryptoPrices);
     return (
         <CryptoPriceContext.Provider
             value={{...cryptoPrices}}

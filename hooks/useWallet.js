@@ -1,3 +1,8 @@
+/*
+* using Alchemy api
+* this returns assets and NFTs under a wallet address
+*/
+
 import { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
 
@@ -29,9 +34,10 @@ const dataFetchReducer = (state, action) => {
     }
 }
 
-const useCryptoPrices = ({ initialData, timerCount }) => {
+const usewallet = ({ initialData, timerCount }) => {
+    //const [running, setRunning] = useState(false);
 
-    //console.log('useCryptoPrices called')
+    console.log('useWallet called')
     const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,
@@ -58,11 +64,11 @@ const useCryptoPrices = ({ initialData, timerCount }) => {
         const timer = setInterval(() => {
             fetchData()
         }, TIMER_INTERVAL);
-
+        
         setTimeout(() => {
           clearInterval(timer);
           console.log('time over');
-      }, timerCount * TIMER_INTERVAL);
+        }, timerCount * TIMER_INTERVAL);
 
         return () => {
             clearInterval(timer)
@@ -72,4 +78,4 @@ const useCryptoPrices = ({ initialData, timerCount }) => {
     return state.cryptoPrices
 }
 
-export default useCryptoPrices
+export default useWallet

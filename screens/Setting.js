@@ -1,5 +1,5 @@
 import { View, StyleSheet, Alert } from 'react-native'
-import React, {useState, useEffect, useReducer} from 'react'
+import React, {useState, useEffect, useReducer, useContext} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     HStack,
@@ -15,18 +15,15 @@ import {
     Button,
     IconButton,
     Icon,
-    ArrowBackIcon
+    ArrowBackIcon,
+    Select
 } from 'native-base'    
 import { AntDesign } from '@expo/vector-icons'
 import {Camera, CameraType} from 'expo-camera'
 import BottomTabs from '../components/home/BottomTabs'
-
-const addressData = [
-    '0x5436457568679dddaafh',
-    '0x57675887568679dddaafh',
-    '0x555567777768679dddaafh',
-    '0x222222221118679dddaafh', 
-]
+import { PortfolioContext } from '../context/PortfolioContext' 
+import {CryptoPriceContext} from '../context/CryptoPriceContext'
+import { addressData } from '../DummyData'
 
 const QRCodeScanComponent = (props) => {
     return (
@@ -61,40 +58,43 @@ const QRCodeScanComponent = (props) => {
     )
 }
 
-const addressReducer = (addresses, action) =>{
-    switch (action.type) {
-        case 'ADD_ADDRESS':
-            return [
-                ...addresses,
-                action.payload
-            ];
-    
-        default:
-            throw new Error();
-    }
-}
-
 const Setting = ({ navigation }) => {
     const [newAddress, setNewAddress] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
     const [hasPermission, setHasPermission] = useState(null);
-    const [walletAddresses, dispatch] = useReducer(addressReducer, addressData);
+    const [chain, setChain] = useState('ethereum');
+    const {wallets, dispatch} = useContext(PortfolioContext);
+    const walletAddresses = wallets.map(wallet => ({
+        address: wallet.address,
+        chain: wallet.chain
+    }));
 
-    console.log('Setting: ');
+    //console.log('Setting: cryptoPrices= ', cryptoPrices);
+    //console.log('Setting: wallet addresses= ', walletAddresses);
 
     const goBack = () => {setIsScanning(false)}
 
+    const onAddButtonPress = () => {
+        dispatch({
+            type: 'ADD_ADDRESS', 
+            payload: {
+                chain,
+                address: newAddress.toString()
+            } 
+        });
+        setNewAddress(null);
+        console.log('new address addes')
+    }
+    
     useEffect(() => {
         (async () => {
           const { status } = await Camera.requestCameraPermissionsAsync();
           setHasPermission(status === 'granted');
         })();
       }, []);
-       
-    //console.log('walletAddresses= ', walletAddresses);
      
     return (
-        <SafeAreaView style={{ backgroundColor: '#eee', flex: 1 }}>
+        <SafeAreaView style={{ backgroundColor: '#e6f7ff', flex: 1 }}>
             <View>
                 <HStack
                     alignItems="center"
@@ -129,11 +129,7 @@ const Setting = ({ navigation }) => {
                                         colorScheme="primary"
                                         leftIcon={<AddIcon size="sm" />}
                                         isDisabled={!newAddress}
-                                        onPress={() => {
-                                            dispatch({type: 'ADD_ADDRESS', payload: newAddress.toString()});
-                                            setNewAddress(null);
-                                            console.log('hello')
-                                        }}
+                                        onPress={onAddButtonPress}
                                     >
                                         Add
                                     </Button>
@@ -155,24 +151,36 @@ const Setting = ({ navigation }) => {
                             </VStack>
 
                             <VStack p="5">
-                                <Heading fontSize="xl" mb="3">
+                                <Heading fontSize="xl" my="1">
                                     Wallet Addresses:{' '}
                                 </Heading>
+                                <Select
+                                    selectedValue={chain}
+                                    my='1'
+                                    fontSize='xl'
+                                    onValueChange={itemValue => setChain(itemValue)}
+                                    _selectedItem={{
+                                        fontSize: 'xl'
+                                    }}
+                                >
+                                    <Select.Item label="Ethereum" value="ethereum" />
+                                </Select>
+                                
                                 <ScrollView
-                                    maxW="300"
                                     h="150"
                                     borderRadius="2"
                                     borderWidth="1"
+                                    w='100%'
                                 >
-                                    {walletAddresses.map((address, idx) => (
+                                    {walletAddresses.map((addressData, idx) => (
                                         <Center
-                                            key={address}    
-                                            bg="primary.300"
+                                            key={addressData.address}    
+                                            bg="gray.300"
                                             p="2"
                                             m="1"
                                             borderRadius="5"
                                         >
-                                            {address}
+                                            {addressData.address}
                                         </Center>
                                     ))}
                                 </ScrollView>
@@ -181,9 +189,7 @@ const Setting = ({ navigation }) => {
                         <Divider width={1} />
                         <BottomTabs navigation={navigation} />
                     </VStack>
-                    
             }
-            
         </SafeAreaView>
     )
 }

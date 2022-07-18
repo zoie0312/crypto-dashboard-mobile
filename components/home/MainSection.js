@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import React from 'react'
+import React, {useContext} from 'react'
 import {
     HStack,
     Text,
@@ -9,25 +9,26 @@ import {
     Heading,
 } from 'native-base'
 import { PieChart } from 'react-native-gifted-charts'
-
-const pieChartData = [
-    { value: 1000, color: '#e68A00', text: '33%' },
-    { value: 2000, color: '#1F7A1F', text: '67%' },
-]
+import { pieChartData } from '../../DummyData'
+import { PortfolioContext } from '../../context/PortfolioContext'
+import { useGlobalize } from 'react-native-globalize';
 
 const MainSection = () => {
+    const { formatCurrency } = useGlobalize();
+    const { totalValue, tokensWorth, nftsWorth } = useContext(PortfolioContext);
+    
     return (
         <VStack px={4}>
             <HStack alignItems={'center'} justifyContent="space-between">
-                <Heading italic size='2xl'>$3,500.40</Heading>
+                <Heading italic size='2xl'>{formatCurrency(totalValue, 'USD')}</Heading>
                 <VStack>
                     <HStack alignItems={'center'} space="2" justifyContent="space-between">
                         <Text fontSize="sm" color="trueGray.400">Wallet</Text>
-                        <Text fontSize="md">$2,000.00</Text>
+                        <Text fontSize="md">{formatCurrency(tokensWorth, 'USD')}</Text>
                     </HStack>
                     <HStack alignItems={'center'} space="2" justifyContent="space-between">
                         <Text fontSize="sm" color="trueGray.400">NFTs Worth</Text>
-                        <Text fontSize="md">$1,500.00</Text>
+                        <Text fontSize="md">{formatCurrency(nftsWorth, 'USD')}</Text>
                     </HStack>
                 </VStack>
                 
