@@ -22,15 +22,17 @@ const dataFetchReducer = (state, action) => {
                 isError: false,
             }
         case 'FETCH_SUCCESS':
-            const result = action.payload;
+            const {result, cryptoPrices} = action.payload;
+            const priceData = {
+                floorPrice: result['openSea']['floorPrice'] || 0,
+                priceCurrency: result['openSea']['priceCurrency'] || 'ETH'
+            };
+            priceData['floorPriceInUSD'] = priceData.floorPrice * cryptoPrices[priceData.priceCurrency]['USD'];
             return {
                 ...state,
                 isLoading: false,
                 isError: false,
-                priceData: {
-                    floorPrice: result['openSea']['floorPrice'],
-                    priceCurrency: result['openSea']['priceCurrency']
-                }
+                priceData 
             }
         case 'FETCH_FAILURE':
             return {
@@ -44,7 +46,7 @@ const dataFetchReducer = (state, action) => {
     }
 }
 
-const useFloorPrice = ({ contractAddress }) => {
+const useFloorPrice = ({ contractAddress, updateNFTPrice, cryptoPrices }) => {
     //const [running, setRunning] = useState(false);
 
     // console.log('useFloorPrice called');
@@ -70,7 +72,8 @@ const useFloorPrice = ({ contractAddress }) => {
                 const resp = await axios(config);
                 const result = resp.data;
                 //console.log('got axios result= ', result);
-                dispatch({ type: 'FETCH_SUCCESS', payload: result})
+                dispatch({ type: 'FETCH_SUCCESS', payload: {result, cryptoPrices}});
+                updateNFTPrice({contractAddress, result, cryptoPrices});
             } catch (error) {
                 dispatch({ type: 'FETCH_FAILURE' })
             }
@@ -80,7 +83,7 @@ const useFloorPrice = ({ contractAddress }) => {
         
         return () => {
         }
-    }, [contractAddress])
+    }, [contractAddress]); //don't need to add updateNFTPrice as dependency as it's from PortfolioContext
 
     return {...state};
 }

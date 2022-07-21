@@ -23,7 +23,7 @@ import {Camera, CameraType} from 'expo-camera'
 import BottomTabs from '../components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
 import {CryptoPriceContext} from '../context/CryptoPriceContext'
-import { addressData } from '../DummyData'
+//import { addressData } from '../DummyData'
 
 const QRCodeScanComponent = (props) => {
     return (
@@ -119,7 +119,6 @@ const Setting = ({ navigation }) => {
                                     placeholder="長按以貼上"
                                     value={newAddress}
                                     onChangeText={(msg) => {
-                                        console.log(msg);
                                         setNewAddress(msg)
                                     }}
                                 />

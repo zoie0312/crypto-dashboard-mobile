@@ -12,7 +12,7 @@ import NFTSection from '../components/home/NFTSection'
 import WalletSection from '../components/home/WalletSection'
 import { CryptoPriceContext } from '../context/CryptoPriceContext'
 import { PortfolioContext } from '../context/PortfolioContext'
-import {walletData} from '../DummyData'
+//import {walletData} from '../DummyData'
 
 const YELP_API_KEY =
     'bdRJutLhFAQJ36t7b89CWjHFBU4OKzjt9wvZzcY-nkgmvTqlNMjZWV1eG7iBQ9R74SyfxRg9LWnBAkZY06BtAZAe4d2dfX-2vuX8a1l5V7foctHfX9UKEyoM5ts3YXYx'
@@ -38,7 +38,8 @@ export default function Home({ navigation }) {
                     walletAddresses.map((wallet) => (
                         <WalletSection 
                             key={wallet.address}
-                            wallet={wallet} 
+                            address={wallet.address}
+                            chain={wallet.chain}
                         />
                     ))
                 }

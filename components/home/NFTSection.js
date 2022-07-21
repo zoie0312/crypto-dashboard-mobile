@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
     HStack,
     Text,
@@ -8,15 +8,13 @@ import {
     Box,
     Image,
     ScrollView,
-    FlatList,
-    
-    
+    FlatList
 } from 'native-base'
 import SectionHeader from './SectionHeader'
 import NFTCard from './NFTCard'
-import useNFT from '../../hooks/useNFT'
 
 const NFTSection = (props) => {
+
     return (
         <VStack>
             {/* <FlatList
@@ -32,8 +30,6 @@ const NFTSection = (props) => {
                         <NFTCard
                             title={item.title}
                             imageUrl={item.imageUrl}
-                            price={item.price}
-                            currency={item.currency}
                             contractAddress={item.contractAddress}
                         />
                 }}
@@ -46,15 +42,13 @@ const NFTSection = (props) => {
             >
                 {props.nftData.map((data, idx) => (
                     data.more ? 
-                    <Center  bg="primary.400" p="10">
+                    <Center  bg="primary.400" p="10" key='more..'>
                         <ChevronRightIcon size='lg'/>
                     </Center> :
                      <NFTCard
                         key={data.tokenId}
                         title={data.title}
                         imageUrl={data.imageUrl}
-                        price={data.price}
-                        currency={data.currency}
                         contractAddress={data.contractAddress}
                     />
                 ))}

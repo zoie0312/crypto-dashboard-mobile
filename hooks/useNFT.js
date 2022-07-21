@@ -3,7 +3,7 @@
 * this returns NFTs under a wallet address
 */
 
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer, useCallback } from 'react'
 import axios from 'axios'
 
 const apiKey = "5i3nUfMDsESoLsuo1FwKSTuA78J0fiP8";
@@ -53,21 +53,65 @@ const dataFetchReducer = (state, action) => {
     }
 }
 
-const useNFT = ({ ownerAddr, chain }) => {
-    const [reload, setReload] = useState(0);
+const fetchFloorPrices = (contractAddresses) => {
+    //const nftPrices = [];
+    const fetchPrice = async (address) => {
+        const baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${apiKey}/getFloorPrice/`;
+        try {
+            const config = {
+                method: 'get',
+                url: `${baseURL}?contractAddress=${address}`
+            };
+            
+            const resp = await axios(config);
+            const result = resp.data;
+            //console.log('got axios result= ', result);
+            const floorPrice= result['openSea'] ? 
+            result['openSea']['floorPrice'] : result['looksRare'] ? 
+            result['looksRare']['floorPrice'] : NaN;
+            const priceCurrency= result['openSea'] ? 
+            result['openSea']['priceCurrency'] : result['looksRare'] ? 
+            result['looksRare']['priceCurrency'] : 'ETH';
+                            
+            // nftPrices.push({
+            //     contractAddress: address,
+            //     floorPrice,
+            //     priceCurrency
+            // })
+            return {
+                contractAddress: address,
+                floorPrice,
+                priceCurrency
+            }
+            
+        } catch (error) {
+            console.log('fetch price error, ', error);
+        }
+    }
+    // contractAddresses.forEach(async (address) => {
+    //     const found = nftPrices.find(nft => nft.contractAddress === address);
+    //     if (!found) {
+    //         await fetchPrice(address);
+    //     }
+    // });
+    fetchPriceTasks = contractAddresses.map(address => {
+        return fetchPrice(address);
+    })
+    return Promise.allSettled(fetchPriceTasks);
+}
+
+const useNFT = ({address, chain, isLoaded, updateNFT, updateNftPrices}) => {
 
     //console.log('useNFT called');
-    //console.log('ownerAddr= ', ownerAddr);
-    //console.log('reload= ', reload)
-    // console.log('chain= ', chain);
     const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,
         nftData: [],
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
+    const fetchData = useCallback(() => {
+        const ownerAddr = address;
+        const doFetchData = async () => {
             dispatch({ type: 'FETCH_INIT' })
 
             const baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${apiKey}/getNFTs/`;
@@ -79,25 +123,35 @@ const useNFT = ({ ownerAddr, chain }) => {
                 };
                 
                 const resp = await axios(config);
-                //const result = JSON.stringify(resp.data);
                 const result = resp.data;
                 //console.log('got axios result= ', result);
-                dispatch({ type: 'FETCH_SUCCESS', payload: { result, chain }})
+                dispatch({ type: 'FETCH_SUCCESS', payload: { result, chain }});
+                updateNFT({ fetchResult: result, address, chain });
+                let nftAddresses = result.ownedNfts && result.ownedNfts.reduce((acc, item) => {
+                    if (!item.error) {
+                        acc.push(item.contract.address);
+                    }
+                    return acc;
+                }, []);
+                nftAddresses = [...new Set(nftAddresses)];
+                const nftPrices = await fetchFloorPrices(nftAddresses);
+                updateNftPrices({priceData: nftPrices, chain});
             } catch (error) {
                 dispatch({ type: 'FETCH_FAILURE' })
-            }
+            } 
         }
 
-        //if (reload) {
-            fetchData();
-        //}
+        doFetchData();
+    }, [address, chain]); //don't need to add updateNFT as dependency as it's from PortfolioContext
+
+    useEffect(() => {
+        if (!isLoaded) {
+           fetchData();
+        }
                 
-        return () => {
-            //setReload(false);
-        }
-    }, [ownerAddr, chain, reload])
+    }, [isLoaded, fetchData]);
 
-    return [state, setReload];
+    return [state, fetchData];
 }
 
 export default useNFT

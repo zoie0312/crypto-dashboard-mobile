@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useContext, useRef} from 'react'
 import { 
     HStack, 
     Text, 
@@ -21,7 +21,7 @@ import useNFT from '../../hooks/useNFT'
 import { PortfolioContext } from '../../context/PortfolioContext'
 
 const AssetCard = (props) => {
-    const {assetName, assetlogo, balance, exchangeRate} = props;
+    const {assetName, assetLogo, balance, exchangeRate} = props;
     const valueInUSD = (Math.round(parseFloat(balance) * parseFloat(exchangeRate) * 100) / 100).toFixed(2);
     return (
         <HStack 
@@ -36,7 +36,7 @@ const AssetCard = (props) => {
             <HStack alignItems="center">
                 <Image
                     source={{
-                        uri: assetlogo
+                        uri: assetLogo
                     }}
                     mr="2"
                     alt={assetName}
@@ -55,27 +55,42 @@ const AssetCard = (props) => {
     )
 }
 
-const WalletSection = ({wallet, ...props}) => {
-    const {chain, address} = wallet;
-    const [{ isLoading, isError, nftData }, doFetch] = useNFT({ownerAddr: address, chain});
-    const { dispatch } = useContext(PortfolioContext);
-    const reduceNFTData = nftData.reduce((acc, curr, idx) => {
-        //console.log('nft title ', curr.title);
-        if (idx < 20) {
-            acc.push({
-                title: curr.title,
-                imageUrl: curr.imageUrl,
-                contractAddress: curr.contractAddress,
-            })
-        }
-        if (idx === 20) {
-            acc.push({
-                more: true
-            })
-        }
-        return acc;
-    }, []);
-    const reduceAssetData = assetData.reduce((acc, curr, idx) => {
+const WalletSection = ({chain, address, ...props}) => {
+    const { wallets, updateNFT, updateNftPrices } = useContext(PortfolioContext);
+    //console.log('WalletSection wallets= ', wallets);
+    const targetWallet = wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
+    const isNFTsLoaded = targetWallet && targetWallet.nftAssets;
+    const [{ isLoading, nftData }, fetchNFTData] = useNFT({
+        address, 
+        chain, 
+        isLoaded: isNFTsLoaded, 
+        updateNFT,
+        updateNftPrices
+    });
+        
+    let reduceNFTData = [],
+        reduceAssetData = [];
+    if (isNFTsLoaded) {
+        reduceNFTData = targetWallet.nftAssets.reduce((acc, curr, idx) => {
+            //console.log('nft title ', curr.title);
+            if (idx < 70) {
+                acc.push({
+                    title: curr.title,
+                    imageUrl: curr.imageUrl,
+                    contractAddress: curr.contractAddress,
+                    tokenId: curr.tokenId
+                })
+            }
+            if (idx === 70) {
+                acc.push({
+                    more: true
+                })
+            }
+            return acc;
+        }, []);
+    }
+    
+    reduceAssetData = assetData.reduce((acc, curr, idx) => {
         if (idx < 7 && (idx%2 === 0)) {
             acc.push({
                 leftData: assetData[idx],
@@ -85,24 +100,17 @@ const WalletSection = ({wallet, ...props}) => {
         return acc;
     }, []);
 
-    useEffect(() => {
-        dispatch({
-            type: 'UPDATE_PORTFOLIO_NFTS',
-            payload: { nftData, address, chain }
-        } )
-    }, [nftData, address, chain])
-
     return (    
         <VStack  flex={1} my="1" bg={'white'} rounded='xl' mx='2'>
             <VStack rounded={'md'} p='2'>
                 <HStack justifyContent='space-between' alignItems="center">
-                    <Text fontSize={'sm'} fontWeight='bold'> {wallet.address}</Text>
+                    <Text fontSize={'sm'} fontWeight='bold'> {address}</Text>
                     {
                         isLoading ? <Spinner size="sm" color="cyan.500"/> : 
                             <IconButton
                                 icon={<Icon size="sm" as={AntDesign} name="reload1" color="cyan.500" />}
                                 onPress={()=>{
-                                    doFetch(count => count+1);
+                                    fetchNFTData();
                                 }}
                             />    
                     }
@@ -122,7 +130,7 @@ const WalletSection = ({wallet, ...props}) => {
                             >
                                 <AssetCard
                                     assetName={leftData.assetName}
-                                    assetlogo={leftData.assetlogo}
+                                    assetLogo={leftData.assetLogo}
                                     balance={leftData.balance}
                                     exchangeRate={leftData.exchangeRate}
                                 />
@@ -134,7 +142,7 @@ const WalletSection = ({wallet, ...props}) => {
                                     rightData ? 
                                         <AssetCard
                                             assetName={rightData.assetName}
-                                            assetlogo={rightData.assetlogo}
+                                            assetLogo={rightData.assetLogo}
                                             balance={rightData.balance}
                                             exchangeRate={rightData.exchangeRate}
                                         /> : <Box  p="2" rounded="lg"/>
@@ -151,5 +159,7 @@ const WalletSection = ({wallet, ...props}) => {
         </VStack>
   )
 }
+
+
 
 export default WalletSection
