@@ -19,6 +19,8 @@ import NFTSection from './NFTSection'
 import { assetData, NFTData } from '../../DummyData'
 import useNFT from '../../hooks/useNFT'
 import { PortfolioContext } from '../../context/PortfolioContext'
+import { CryptoPriceContext } from '../../context/CryptoPriceContext'
+import { NFTPriceContext } from '../../context/NFTPriceContext'
 
 const AssetCard = (props) => {
     const {assetName, assetLogo, balance, exchangeRate} = props;
@@ -56,32 +58,35 @@ const AssetCard = (props) => {
 }
 
 const WalletSection = ({chain, address, ...props}) => {
-    const { wallets, updateNFT, updateNftPrices } = useContext(PortfolioContext);
-    //console.log('WalletSection wallets= ', wallets);
+    const cryptoPrices = useContext(CryptoPriceContext);
+    const { dispatch: nftPriceDispatch} = useContext(NFTPriceContext);
+    const { wallets, dispatch: portfolioDispatch } = useContext(PortfolioContext);
     const targetWallet = wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
     const isNFTsLoaded = targetWallet && targetWallet.nftAssets;
     const [{ isLoading, nftData }, fetchNFTData] = useNFT({
         address, 
         chain, 
         isLoaded: isNFTsLoaded, 
-        updateNFT,
-        updateNftPrices
+        portfolioDispatch,
+        nftPriceDispatch,
+        cryptoPrices
     });
         
     let reduceNFTData = [],
         reduceAssetData = [];
     if (isNFTsLoaded) {
         reduceNFTData = targetWallet.nftAssets.reduce((acc, curr, idx) => {
-            //console.log('nft title ', curr.title);
-            if (idx < 70) {
+            if (idx < 20) {
                 acc.push({
                     title: curr.title,
                     imageUrl: curr.imageUrl,
                     contractAddress: curr.contractAddress,
-                    tokenId: curr.tokenId
+                    tokenId: curr.tokenId,
+                    floorPrice: curr.floorPrice,
+                    priceCurrency: curr.priceCurrency
                 })
             }
-            if (idx === 70) {
+            if (idx === 20) {
                 acc.push({
                     more: true
                 })
@@ -104,7 +109,7 @@ const WalletSection = ({chain, address, ...props}) => {
         <VStack  flex={1} my="1" bg={'white'} rounded='xl' mx='2'>
             <VStack rounded={'md'} p='2'>
                 <HStack justifyContent='space-between' alignItems="center">
-                    <Text fontSize={'sm'} fontWeight='bold'> {address}</Text>
+                    <Text fontSize={'xs'} fontWeight='bold'> {address}</Text>
                     {
                         isLoading ? <Spinner size="sm" color="cyan.500"/> : 
                             <IconButton

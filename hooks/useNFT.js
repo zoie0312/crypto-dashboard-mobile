@@ -54,53 +54,23 @@ const dataFetchReducer = (state, action) => {
 }
 
 const fetchFloorPrices = (contractAddresses) => {
-    //const nftPrices = [];
-    const fetchPrice = async (address) => {
-        const baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${apiKey}/getFloorPrice/`;
-        try {
-            const config = {
-                method: 'get',
-                url: `${baseURL}?contractAddress=${address}`
-            };
-            
-            const resp = await axios(config);
-            const result = resp.data;
-            //console.log('got axios result= ', result);
-            const floorPrice= result['openSea'] ? 
-            result['openSea']['floorPrice'] : result['looksRare'] ? 
-            result['looksRare']['floorPrice'] : NaN;
-            const priceCurrency= result['openSea'] ? 
-            result['openSea']['priceCurrency'] : result['looksRare'] ? 
-            result['looksRare']['priceCurrency'] : 'ETH';
-                            
-            // nftPrices.push({
-            //     contractAddress: address,
-            //     floorPrice,
-            //     priceCurrency
-            // })
-            return {
-                contractAddress: address,
-                floorPrice,
-                priceCurrency
-            }
-            
-        } catch (error) {
-            console.log('fetch price error, ', error);
-        }
-    }
-    // contractAddresses.forEach(async (address) => {
-    //     const found = nftPrices.find(nft => nft.contractAddress === address);
-    //     if (!found) {
-    //         await fetchPrice(address);
-    //     }
-    // });
+    
     fetchPriceTasks = contractAddresses.map(address => {
-        return fetchPrice(address);
-    })
+        const baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${apiKey}/getFloorPrice/`;
+        const config = {
+            method: 'get',
+            url: `${baseURL}?contractAddress=${address}`
+        };
+        return axios(config).then(resp =>  ({
+            contractAddress: address,
+            data: resp.data
+        }));
+    });
+    
     return Promise.allSettled(fetchPriceTasks);
 }
 
-const useNFT = ({address, chain, isLoaded, updateNFT, updateNftPrices}) => {
+const useNFT = ({address, chain, isLoaded, portfolioDispatch, nftPriceDispatch, cryptoPrices}) => {
 
     //console.log('useNFT called');
     const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -126,7 +96,12 @@ const useNFT = ({address, chain, isLoaded, updateNFT, updateNftPrices}) => {
                 const result = resp.data;
                 //console.log('got axios result= ', result);
                 dispatch({ type: 'FETCH_SUCCESS', payload: { result, chain }});
-                updateNFT({ fetchResult: result, address, chain });
+                portfolioDispatch(
+                    {
+                        type: 'UPDATE_PORTFOLIO_NFTS',
+                        payload: { fetchResult: result, address, chain }
+                    }
+                )
                 let nftAddresses = result.ownedNfts && result.ownedNfts.reduce((acc, item) => {
                     if (!item.error) {
                         acc.push(item.contract.address);
@@ -134,9 +109,46 @@ const useNFT = ({address, chain, isLoaded, updateNFT, updateNftPrices}) => {
                     return acc;
                 }, []);
                 nftAddresses = [...new Set(nftAddresses)];
-                const nftPrices = await fetchFloorPrices(nftAddresses);
-                updateNftPrices({priceData: nftPrices, chain});
+                
+                //continue to fetch NFT floor prices
+                const priceData = await fetchFloorPrices(nftAddresses);
+                const nftPrices = priceData.reduce((acc, item) => {
+                    const {contractAddress, data: {openSea, looksRare}} = item.value;
+                    const result = { contractAddress }
+                    if (openSea.error && looksRare.error) {
+                        return acc;
+                    } else if (looksRare.error) {
+                        result.floorPrice = openSea.floorPrice;
+                        result.priceCurrency = openSea.priceCurrency;
+                    } else {
+                        result.floorPrice = looksRare.floorPrice;
+                        result.priceCurrency = looksRare.priceCurrency;
+                    }
+                    result.floorPriceInUSD = result.floorPrice * cryptoPrices[result.priceCurrency]['USD'];
+                    acc.push(result);
+                    return acc;
+                }, [])
+                console.log('nftPrices ', nftPrices);
+                nftPriceDispatch(
+                    {
+                        type: 'UPDATE_NFT_PRICES',
+                        payload: {
+                            priceData: nftPrices,
+                            chain
+                        }
+                    }
+                );
+                portfolioDispatch(
+                    {
+                        type: 'UPDATE_NFT_PRICES',
+                        payload: {
+                            priceData: nftPrices,
+                            chain
+                        }
+                    }
+                )
             } catch (error) {
+                console.log('useNFT: ', error)
                 dispatch({ type: 'FETCH_FAILURE' })
             } 
         }

@@ -18,7 +18,7 @@ import {
     ArrowBackIcon,
     Select
 } from 'native-base'    
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import {Camera, CameraType} from 'expo-camera'
 import BottomTabs from '../components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
@@ -69,9 +69,6 @@ const Setting = ({ navigation }) => {
         chain: wallet.chain
     }));
 
-    //console.log('Setting: cryptoPrices= ', cryptoPrices);
-    //console.log('Setting: wallet addresses= ', walletAddresses);
-
     const goBack = () => {setIsScanning(false)}
 
     const onAddButtonPress = () => {
@@ -84,6 +81,17 @@ const Setting = ({ navigation }) => {
         });
         setNewAddress(null);
         console.log('new address addes')
+    }
+
+    const removeAddress = (address) => {
+        console.log('remove address ', address);
+        dispatch({
+            type: 'REMOVE_ADDRESS', 
+            payload: {
+                chain,
+                address: address.toString(),
+            } 
+        });
     }
     
     useEffect(() => {
@@ -111,12 +119,13 @@ const Setting = ({ navigation }) => {
             {
                 (isScanning && hasPermission) ? 
                     <QRCodeScanComponent goBack={goBack} setNewAddress={setNewAddress}/> :
-                    <VStack flex='1'>
-                        <VStack flex="1">
-                            <VStack p="5">
+                    <VStack flex='1' justifyContent='space-between'>
+                        <VStack flex="7" >
+                            <VStack p="3" >
                                 <Text fontSize="lg">New address,</Text>
                                 <TextArea 
                                     placeholder="長按以貼上"
+                                    h="16"
                                     value={newAddress}
                                     onChangeText={(msg) => {
                                         setNewAddress(msg)
@@ -149,7 +158,7 @@ const Setting = ({ navigation }) => {
                                 </HStack>
                             </VStack>
 
-                            <VStack p="5">
+                            <VStack p="3" >
                                 <Heading fontSize="xl" my="1">
                                     Wallet Addresses:{' '}
                                 </Heading>
@@ -172,21 +181,34 @@ const Setting = ({ navigation }) => {
                                     w='100%'
                                 >
                                     {walletAddresses.map((addressData, idx) => (
-                                        <Center
+                                        <HStack
                                             key={addressData.address}    
-                                            bg="gray.300"
-                                            p="2"
+                                            p="1"
                                             m="1"
-                                            borderRadius="5"
+                                            bg="gray.300"
+                                            alignItems='center'
+                                            justifyContent='space-between'
+                                            borderRadius='10'
                                         >
-                                            {addressData.address}
-                                        </Center>
+                                            
+                                            <Text  fontSize="xs">{addressData.address}</Text>
+                                            <IconButton
+                                                icon={<Icon size="sm" as={FontAwesome5} name="trash-alt" color="white" />}
+                                                onPress={()=>{
+                                                    removeAddress(addressData.address);
+                                                }}
+                                            />
+                                            
+                                            
+                                        </HStack>
                                     ))}
                                 </ScrollView>
                             </VStack>
                         </VStack>
-                        <Divider width={1} />
-                        <BottomTabs navigation={navigation} />
+                        <VStack  flex='1'>
+                            <BottomTabs navigation={navigation} />
+                        </VStack>
+                        
                     </VStack>
             }
         </SafeAreaView>

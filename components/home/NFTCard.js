@@ -12,34 +12,10 @@ import deals from '../../assets/images/deals.png';
 
 const DEFAULT_IMAGE = RNImage.resolveAssetSource(deals).uri;
 
-function NFTCard({ title, imageUrl, contractAddress }) {
-    //console.log('NFTCard tokenID= ', tokenId);
-    // const imgSource = {
-    //     uri: imageUrl? imageUrl : DEFAULT_IMAGE,
-    //     //uri: DEFAULT_IMAGE
-    // }
-    const [imgSource, setImgSource] = useState(imageUrl? imageUrl : DEFAULT_IMAGE);
+function NFTCard({ title, imageUrl, contractAddress, floorPrice, priceCurrency }) {
+    const imgSource = imageUrl? imageUrl : DEFAULT_IMAGE;
     const cryptoPrices = useContext(CryptoPriceContext);
-    const { updateNFTPrice } = useContext(PortfolioContext);
-    //const { priceData } = useFloorPrice({ contractAddress, updateNFTPrice, cryptoPrices });
-    //const {floorPrice, priceCurrency, floorPriceInUSD} = priceData;
-    //console.log('NFTCard, priceData= ', priceData);
-    const floorPrice = 0;
-    const priceCurrency = 'ETH';    
-    let floorPriceInUSD;
-    if (floorPrice) {
-        floorPriceInUSD = floorPrice * cryptoPrices[priceCurrency]['USD'];
-    }
     
-    // useEffect(() => {
-    //     dispatch({
-    //         type: 'UPDATE_PORTFOLIO_NFT_PRICE',
-    //         payload: {
-    //             contractAddress, 
-    //             floorPriceData: {floorPrice, priceCurrency, floorPriceInUSD}
-    //         }
-    //     });
-    // }, [ contractAddress, cryptoPrices])
     const renderCount = useRef(0);
 
     return (

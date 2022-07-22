@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {
     HStack,
     Text,
@@ -50,6 +50,8 @@ const NFTSection = (props) => {
                         title={data.title}
                         imageUrl={data.imageUrl}
                         contractAddress={data.contractAddress}
+                        floorPrice={data.floorPrice}
+                        priceCurrency={data.priceCurrency}
                     />
                 ))}
             </ScrollView>

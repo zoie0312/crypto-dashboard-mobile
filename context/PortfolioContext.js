@@ -1,6 +1,7 @@
-import {createContext, useReducer, useEffect} from 'react'
+import {createContext, useReducer, useEffect, useContext} from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import useCryptoPrices from '../hooks/useCryptoPrices';
+import {CryptoPriceContext} from './CryptoPriceContext'
 
 // const SampleState = {
 //     referenceCurrency: 'usd',
@@ -26,11 +27,12 @@ import useCryptoPrices from '../hooks/useCryptoPrices';
 //     nftPrices: [
 //         {
 //             chain: 'ethereum',
-//             nfts: [
+//             nftPriceData: [
 //                 {
 //                     contractAddress: '0x534647777',
 //                     floorPrice: 0.3,
-//                     priceCurrency: "ETH"
+//                     priceCurrency: "ETH",
+//                     floorPriceInUSD: 1000 
 //                 }
 //             ]
 //         }
@@ -43,14 +45,14 @@ const InitialState = {
     tokensWorth: 0,
     nftsWorth: 0,
     wallets: [
-        // {
-        //     chain: 'ethereum',
-        //     address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
-        //     tokensWorth: 0,
-        //     nftsWorth: 0,
-        //     tokenAssets: [],
-        //     nftAssets: []
-        // }
+        {
+            chain: 'ethereum',
+            address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
+            tokensWorth: 0,
+            nftsWorth: 0,
+            tokenAssets: [],
+            nftAssets: []
+        }
     ],
     nftPrices: []
     
@@ -64,6 +66,7 @@ const InitialContext = {
 const reducer = (state, action) => {
     const nextState = cloneDeep(state);
     console.log('PortfolioContext reducer, ', action.type);
+    
     switch (action.type) {
         case 'ADD_ADDRESS':
             nextState.wallets.push({
@@ -74,9 +77,12 @@ const reducer = (state, action) => {
             });
             break;
 
+        case 'REMOVE_ADDRESS':
+            nextState.wallets = nextState.wallets.filter(wallet => (wallet.chain !== action.payload.chain) || (wallet.address !== action.payload.address));
+            break; 
+
         case 'UPDATE_PORTFOLIO_NFTS':
             const {fetchResult, address, chain} = action.payload;
-            //console.log('payload nftData= ' , nftData);
             const targetWallet = nextState.wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
             if (targetWallet) {
                 const nftAssets = targetWallet.nftAssets ? targetWallet.nftAssets : [];
@@ -93,9 +99,9 @@ const reducer = (state, action) => {
                                 contractAddress,
                                 tokenId: title + item.id.tokenId,
                                 imageUrl: item.media[0]['gateway'],
-                                floorPrice: 0,
+                                floorPrice: '',
                                 priceCurrency: 'ETH',
-                                floorPriceInUSD: 0 
+                                floorPriceInUSD: ''
                             });
                         }
                     }
@@ -103,41 +109,74 @@ const reducer = (state, action) => {
                 });
                 targetWallet.nftAssets = [...nftAssets, ...newNFTs]; 
             }
+            //console.log('new portfolio stat ', nextState);
             break;
 
-        case 'UPDATE_PORTFOLIO_NFT_PRICE':
-            const { rawData, contractAddress, cryptoPrices } = action.payload;
-            if (rawData) {
-                const floorPrice= rawData['openSea'] ? 
-                        rawData['openSea']['floorPrice'] : rawData['looksRare'] ? 
-                        rawData['looksRare']['floorPrice'] : 0;
-                const priceCurrency= rawData['openSea'] ? 
-                        rawData['openSea']['priceCurrency'] : rawData['looksRare'] ? 
-                        rawData['looksRare']['priceCurrency'] : 'ETH';
+        // case 'UPDATE_PORTFOLIO_NFT_PRICE':
+        //     const { rawData, contractAddress, cryptoPrices } = action.payload;
+        //     if (rawData) {
+        //         const floorPrice= rawData['openSea'] ? 
+        //                 rawData['openSea']['floorPrice'] : rawData['looksRare'] ? 
+        //                 rawData['looksRare']['floorPrice'] : 0;
+        //         const priceCurrency= rawData['openSea'] ? 
+        //                 rawData['openSea']['priceCurrency'] : rawData['looksRare'] ? 
+        //                 rawData['looksRare']['priceCurrency'] : 'ETH';
                 
-                let floorPriceInUSD;
-                if (floorPrice) {
-                    floorPriceInUSD = floorPrice * cryptoPrices[priceCurrency]['USD'];
-                }
-                let nftsWorth = 0;
-                nextState.wallets.forEach(wallet => {
-                    let walletNftsWorth = 0;
-                    wallet.nftAssets.forEach(nft => {
-                        if (nft.contractAddress === contractAddress) {
+        //         let floorPriceInUSD;
+        //         if (floorPrice) {
+        //             floorPriceInUSD = floorPrice * cryptoPrices[priceCurrency]['USD'];
+        //         }
+        //         let nftsWorth = 0;
+        //         nextState.wallets.forEach(wallet => {
+        //             let walletNftsWorth = 0;
+        //             wallet.nftAssets.forEach(nft => {
+        //                 if (nft.contractAddress === contractAddress) {
+        //                     nft.floorPrice = floorPrice;
+        //                     nft.priceCurrency = priceCurrency;
+        //                     nft.floorPriceInUSD = floorPriceInUSD
+        //                 }
+        //                 walletNftsWorth += nft.floorPriceInUSD ? nft.floorPriceInUSD : 0;
+        //             });
+        //             nftsWorth += walletNftsWorth;
+        //         });
+        //         nextState.nftsWorth = nftsWorth;
+        //         nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
+        //     }
+        //     break;
+
+        case 'UPDATE_NFT_PRICES':
+            const { priceData, chain: nftChain } = action.payload;
+            
+            //update wallet nftAssests
+            const addressPriceMap = priceData.reduce((acc, data) => {
+                const {contractAddress, floorPrice, priceCurrency, floorPriceInUSD} = data;
+                acc[contractAddress] = {
+                    floorPrice,
+                    priceCurrency,
+                    floorPriceInUSD
+                } 
+                return acc;
+            },{});
+            let nftsWorth = 0;
+            nextState.wallets.forEach(wallet => {
+                let walletNftsWorth = 0;
+                wallet.nftAssets.forEach(nft => {
+                    if (wallet.chain === nftChain) {
+                        const updatePriceData = addressPriceMap[nft.contractAddress];
+                        if (updatePriceData) {
+                            const {floorPrice, priceCurrency, floorPriceInUSD} = updatePriceData;
                             nft.floorPrice = floorPrice;
                             nft.priceCurrency = priceCurrency;
                             nft.floorPriceInUSD = floorPriceInUSD
-                        }
-                        walletNftsWorth += nft.floorPriceInUSD ? nft.floorPriceInUSD : 0;
-                    });
-                    nftsWorth += walletNftsWorth;
+                        }    
+                    }
+                    walletNftsWorth += nft.floorPriceInUSD ? nft.floorPriceInUSD : 0;
                 });
-                nextState.nftsWorth = nftsWorth;
-                nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
-            }
-            break;
-
-        case 'UPDATE_NFT_PRICES': 
+                nftsWorth += walletNftsWorth;
+            });
+            nextState.nftsWorth = nftsWorth;
+            nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
+            console.log('new portfolio stat ', nextState);
             break;
 
         default: 
@@ -151,39 +190,10 @@ export const PortfolioContext = createContext();
 
 export const PortfolioContextProvider = (props) => {
     const [state, dispatch] = useReducer(reducer, InitialState);
-    //const cryptoPrices = useContext(CryptoPriceContext);
-
-    const updateNFT = ({ fetchResult, address, chain }) => {
-        dispatch({
-            type: 'UPDATE_PORTFOLIO_NFTS',
-            payload: { fetchResult, address, chain }
-        });
-    }
-
-    const updateNFTPrice = ({contractAddress, rawData, cryptoPrices}) => {
-        dispatch({
-            type: 'UPDATE_PORTFOLIO_NFT_PRICE',
-            payload: {
-                rawData,
-                contractAddress,
-                cryptoPrices
-            }
-        });
-    }
-
-    const updateNftPrices = ({priceData, chain}) => {
-        dispatch({
-            type: 'UPDATE_NFT_PRICES',
-            payload: {
-                priceData,
-                chain
-            }
-        })
-    }
     
     return (
         <PortfolioContext.Provider
-            value={{...state, dispatch, updateNFT, updateNFTPrice, updateNftPrices}}
+            value={{...state, dispatch}}
         >
             {props.children}
         </PortfolioContext.Provider>

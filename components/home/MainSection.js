@@ -14,13 +14,17 @@ import { PortfolioContext } from '../../context/PortfolioContext'
 import { useGlobalize } from 'react-native-globalize';
 
 const MainSection = () => {
-    const { formatCurrency } = useGlobalize();
+    const { formatCurrency, formatNumber } = useGlobalize();
     const { totalValue, tokensWorth, nftsWorth } = useContext(PortfolioContext);
+    const pieChartData = [
+        { value: nftsWorth, color: '#e68A00', text: formatNumber(nftsWorth/totalValue, { style: 'percent' }) },
+        { value: tokensWorth, color: '#1F7A1F', text: formatNumber(tokensWorth/totalValue, { style: 'percent' }) },
+    ]
     
     return (
         <VStack px={4}>
             <HStack alignItems={'center'} justifyContent="space-between">
-                <Heading italic size='2xl'>{formatCurrency(totalValue, 'USD')}</Heading>
+                <Heading italic size='lg'>{formatCurrency(totalValue, 'USD')}</Heading>
                 <VStack>
                     <HStack alignItems={'center'} space="2" justifyContent="space-between">
                         <Text fontSize="sm" color="trueGray.400">Wallet</Text>
