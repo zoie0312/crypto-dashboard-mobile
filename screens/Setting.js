@@ -80,11 +80,9 @@ const Setting = ({ navigation }) => {
             } 
         });
         setNewAddress(null);
-        console.log('new address addes')
     }
 
     const removeAddress = (address) => {
-        console.log('remove address ', address);
         dispatch({
             type: 'REMOVE_ADDRESS', 
             payload: {

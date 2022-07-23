@@ -32,7 +32,7 @@ export const CryptoPriceContext = createContext(InitialState);
 
 export const CryptoPriceContextProvider = (props) => {
     //const [state, dispatch] = useReducer(reducer, InitialState);
-    const cryptoPrices = useCryptoPrices({initialData: InitialState, timerCount: 3});
+    const cryptoPrices = useCryptoPrices({initialData: InitialState, timerCount: 2});
     console.log('CryptoPriceContext cryptoPrices= ', cryptoPrices);
     return (
         <CryptoPriceContext.Provider

@@ -1,12 +1,12 @@
 /*
-* using Alchemy api
-* this returns assets and NFTs under a wallet address
+* using Moralis api
+* this returns token assets under a wallet address
 */
-
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer, useCallback } from 'react'
 import axios from 'axios'
+import {SupportTokens} from '../utils/SupportTokens'
 
-const TIMER_INTERVAL = 5000;
+const apiKey = 'EO0m8AeCWdXWsaK0faFFvLGBPwo8ie2B3Sw78W3stNYOVKkEvtL2O90ISog80p9s';
 
 const dataFetchReducer = (state, action) => {
     switch (action.type) {
@@ -17,11 +17,12 @@ const dataFetchReducer = (state, action) => {
                 isError: false,
             }
         case 'FETCH_SUCCESS':
+            const {tokenAsset, chain} = action.payload;
             return {
                 ...state,
                 isLoading: false,
                 isError: false,
-                cryptoPrices: action.payload,
+                tokenAsset,
             }
         case 'FETCH_FAILURE':
             return {
@@ -34,48 +35,91 @@ const dataFetchReducer = (state, action) => {
     }
 }
 
-const usewallet = ({ initialData, timerCount }) => {
+const useWallet = ({address, chain, isLoaded, portfolioDispatch, cryptoPrices}) => {
     //const [running, setRunning] = useState(false);
 
     console.log('useWallet called')
     const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,
-        cryptoPrices: initialData,
+        tokenAsset: [],
     })
 
-    useEffect(() => {
-        const fetchData = async () => {
+    const fetchData = useCallback(() => {
+        const ownerAddr = address;
+        const doFetchData = async () => {
             dispatch({ type: 'FETCH_INIT' })
 
             try {
-                const options = {
-                    method: 'GET',
-                    url: 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,FTT&tsyms=USD',
-                }
-                const result = await axios.request(options)
-
-                dispatch({ type: 'FETCH_SUCCESS', payload: result.data })
+                const balanceUrl = `https://deep-index.moralis.io/api/v2/${ownerAddr}/erc20?chain=eth`;
+                const nativeBalanceUrl = `https://deep-index.moralis.io/api/v2/${ownerAddr}/balance?chain=eth`;
+                const balanceConfig = {
+                    method: 'get',
+                    url: balanceUrl,
+                    headers: {
+                        'X-API-Key': apiKey,
+                        'accept': 'application/json'
+                    }
+                };
+                const nativeBalanceConfig = {
+                    method: 'get',
+                    url: nativeBalanceUrl,
+                    headers: {
+                        'X-API-Key': apiKey,
+                        'accept': 'application/json'
+                    }
+                };
+                const [result, nativeResult] = await Promise.all([axios(balanceConfig), axios(nativeBalanceConfig)]); 
+                console.log('fetch tokens result ', result);
+                const filterResult = result.data.filter(token => {
+                    return  SupportTokens[token.symbol] && 
+                        (SupportTokens[token.symbol]['token_address'] === token['token_address'])
+                });
+                let tokenAsset = filterResult.map(tokenData => {
+                    const {token_address, symbol, thumbnail, balance, decimals } = tokenData;
+                    return {
+                        symbol,
+                        thumbnail,
+                        balance: Number(balance)/10**decimals,
+                        exchangeRate: cryptoPrices[symbol]['USD'] || 0,
+                    }
+                });
+                tokenAsset.push({
+                    symbol: 'ETH',
+                    thumbnail: SupportTokens['ETH']['thumbnail'],
+                    balance: Number(nativeResult.data.balance)/10**18,
+                    exchangeRate: cryptoPrices['ETH']['USD'] || 0
+                });
+                tokenAsset = tokenAsset.sort((token1, token2) => token2.balance * token2.exchangeRate - token1.balance * token1.exchangeRate)
+                dispatch({ type: 'FETCH_SUCCESS', payload: {tokenAsset, chain}});
+                portfolioDispatch(
+                    {
+                        type: 'UPDATE_TOKEN_ASSET',
+                        payload: {
+                            tokenAsset,
+                            address: ownerAddr,
+                            chain
+                        }
+                    }
+                );
             } catch (error) {
+                console.log('useWallet fetchData ', error);
                 dispatch({ type: 'FETCH_FAILURE' })
             }
         }
 
-        const timer = setInterval(() => {
-            fetchData()
-        }, TIMER_INTERVAL);
-        
-        setTimeout(() => {
-          clearInterval(timer);
-          console.log('time over');
-        }, timerCount * TIMER_INTERVAL);
+        doFetchData();
 
-        return () => {
-            clearInterval(timer)
+    }, [address, chain])
+
+    useEffect(() => {
+        if (!isLoaded) {
+           fetchData();
         }
-    }, [])
+                
+    }, [isLoaded, fetchData]);
 
-    return state.cryptoPrices
+    return [state, fetchData];
 }
 
 export default useWallet

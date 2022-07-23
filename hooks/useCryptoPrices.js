@@ -1,7 +1,12 @@
 import { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
+import {SupportTokens} from '../utils/SupportTokens'
 
 const TIMER_INTERVAL = 5000;
+const TOKEN_LIST = Object.keys(SupportTokens).reduce((acc, symbol, idx) => {
+    acc += idx===0 ? symbol.toString() : `,${symbol.toString()}`
+    return acc;
+}, '');
 
 const dataFetchReducer = (state, action) => {
     switch (action.type) {
@@ -45,12 +50,13 @@ const useCryptoPrices = ({ initialData, timerCount }) => {
             try {
                 const options = {
                     method: 'GET',
-                    url: 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,FTT&tsyms=USD',
+                    url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${TOKEN_LIST}&tsyms=USD`
                 }
                 const result = await axios.request(options)
 
                 dispatch({ type: 'FETCH_SUCCESS', payload: result.data })
             } catch (error) {
+                console.log('useCryptoPrices fetchData ', error);
                 dispatch({ type: 'FETCH_FAILURE' })
             }
         }

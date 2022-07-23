@@ -72,7 +72,6 @@ const fetchFloorPrices = (contractAddresses) => {
 
 const useNFT = ({address, chain, isLoaded, portfolioDispatch, nftPriceDispatch, cryptoPrices}) => {
 
-    //console.log('useNFT called');
     const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,

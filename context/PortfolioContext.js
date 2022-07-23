@@ -45,14 +45,14 @@ const InitialState = {
     tokensWorth: 0,
     nftsWorth: 0,
     wallets: [
-        {
-            chain: 'ethereum',
-            address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
-            tokensWorth: 0,
-            nftsWorth: 0,
-            tokenAssets: [],
-            nftAssets: []
-        }
+        // {
+        //     chain: 'ethereum',
+        //     address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
+        //     tokensWorth: 0,
+        //     nftsWorth: 0,
+        //     tokenAssets: [],
+        //     nftAssets: []
+        // }
     ],
     nftPrices: []
     
@@ -65,6 +65,8 @@ const InitialContext = {
 
 const reducer = (state, action) => {
     const nextState = cloneDeep(state);
+    const {address, chain} = action.payload;
+    const targetWallet = nextState.wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
     console.log('PortfolioContext reducer, ', action.type);
     
     switch (action.type) {
@@ -81,9 +83,27 @@ const reducer = (state, action) => {
             nextState.wallets = nextState.wallets.filter(wallet => (wallet.chain !== action.payload.chain) || (wallet.address !== action.payload.address));
             break; 
 
+        case 'UPDATE_TOKEN_ASSET':
+            const { tokenAsset } = action.payload;
+            
+            if (targetWallet) {
+                targetWallet.tokenAssets = tokenAsset;
+            }
+            let tokensWorth = 0;
+            nextState.wallets.forEach(wallet => {
+                let walletTokensWorth = 0;
+                wallet.tokenAssets && wallet.tokenAssets.forEach(token => {
+                    walletTokensWorth += token['balance']*token['exchangeRate'] ? token['balance']*token['exchangeRate'] : 0;
+                });
+                tokensWorth += walletTokensWorth;
+            });
+            nextState.tokensWorth = tokensWorth;
+            nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
+            console.log('new portfolio state ', nextState);
+            break;
+
         case 'UPDATE_PORTFOLIO_NFTS':
-            const {fetchResult, address, chain} = action.payload;
-            const targetWallet = nextState.wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
+            const { fetchResult } = action.payload;
             if (targetWallet) {
                 const nftAssets = targetWallet.nftAssets ? targetWallet.nftAssets : [];
                 const newNFTs = [];
@@ -160,7 +180,7 @@ const reducer = (state, action) => {
             let nftsWorth = 0;
             nextState.wallets.forEach(wallet => {
                 let walletNftsWorth = 0;
-                wallet.nftAssets.forEach(nft => {
+                wallet.nftAssets && wallet.nftAssets.forEach(nft => {
                     if (wallet.chain === nftChain) {
                         const updatePriceData = addressPriceMap[nft.contractAddress];
                         if (updatePriceData) {
@@ -176,7 +196,7 @@ const reducer = (state, action) => {
             });
             nextState.nftsWorth = nftsWorth;
             nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
-            console.log('new portfolio stat ', nextState);
+            //console.log('new portfolio stat ', nextState);
             break;
 
         default: 
