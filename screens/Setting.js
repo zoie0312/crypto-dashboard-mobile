@@ -23,6 +23,7 @@ import {Camera, CameraType} from 'expo-camera'
 import BottomTabs from '../components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
 import {CryptoPriceContext} from '../context/CryptoPriceContext'
+//import { useGetCryptoPricesQuery } from '../app/services/api'
 //import { addressData } from '../DummyData'
 
 const QRCodeScanComponent = (props) => {
@@ -68,6 +69,10 @@ const Setting = ({ navigation }) => {
         address: wallet.address,
         chain: wallet.chain
     }));
+    // const {data: cryptoPrices} = useGetCryptoPricesQuery();
+    // if (cryptoPrices) {
+    //     console.log('cryptoPrices get, ', cryptoPrices);
+    // }
 
     const goBack = () => {setIsScanning(false)}
 

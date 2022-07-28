@@ -7,7 +7,9 @@ import { CryptoPriceContextProvider } from './context/CryptoPriceContext'
 import { NFTPriceContextProvider } from './context/NFTPriceContext'
 import { PortfolioContextProvider } from './context/PortfolioContext'
 import { loadCldr } from 'react-native-globalize'
-import { PromiseHelperAllSettled } from './utils/PromiseHelperAllSettled'
+import { PromiseHelperAllSettled } from './app/utils/PromiseHelperAllSettled'
+import { store } from './app/store'
+import { Provider } from 'react-redux'
 
 const config = {
     dependencies: {
@@ -29,7 +31,9 @@ export default function App() {
             <CryptoPriceContextProvider>
                 <NFTPriceContextProvider>
                     <PortfolioContextProvider>
-                        <RootNavigation />
+                        <Provider store={store}>
+                            <RootNavigation />
+                        </Provider>
                     </PortfolioContextProvider>
                 </NFTPriceContextProvider>
             </CryptoPriceContextProvider>

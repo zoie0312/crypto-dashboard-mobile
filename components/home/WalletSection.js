@@ -23,10 +23,13 @@ import useWallet from '../../hooks/useWallet'
 import { PortfolioContext } from '../../context/PortfolioContext'
 import { CryptoPriceContext } from '../../context/CryptoPriceContext'
 import { NFTPriceContext } from '../../context/NFTPriceContext'
+import { useGetCryptoPricesQuery } from '../../app/services/api'
 
 const AssetCard = (props) => {
     const { formatNumber } = useGlobalize();
-    const {assetName, assetLogo, balance, exchangeRate} = props;
+    const {assetName, assetLogo, balance} = props;
+    const {data: cryptoPrices} = useGetCryptoPricesQuery();
+    const exchangeRate = cryptoPrices?.[assetName]?.['USD'] || 0;
     const valueInUSD = formatNumber(balance*exchangeRate, { maximumFractionDigits: 2 });
     return (
         <HStack 

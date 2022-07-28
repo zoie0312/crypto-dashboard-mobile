@@ -4,13 +4,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import Home from './screens/Home'
 import RestaurantDetail from './screens/RestaurantDetail'
 import Setting from './screens/Setting'
-import { Provider as ReduxProvider } from 'react-redux'
-import configureStore from './redux/store'
+//import { Provider as ReduxProvider } from 'react-redux'
+//import configureStore from './redux/store'
 import OrderCompleted from './screens/OrderCompleted'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GlobalizeProvider } from 'react-native-globalize'
 
-const store = configureStore()
+//const store = configureStore()
 
 export default function RootNavigation() {
     const Stack = createStackNavigator()
@@ -20,7 +20,7 @@ export default function RootNavigation() {
     }
 
     return (
-        <ReduxProvider store={store}>
+        // <ReduxProvider store={store}>
             <GlobalizeProvider locale="en" currency="USD">
                 <SafeAreaProvider>
                     <NavigationContainer>
@@ -38,6 +38,6 @@ export default function RootNavigation() {
                     </NavigationContainer>
                 </SafeAreaProvider>
             </GlobalizeProvider>
-        </ReduxProvider>
+        // </ReduxProvider>
     )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
-import {SupportTokens} from '../utils/SupportTokens'
+import {SupportTokens} from '../app/utils/SupportTokens'
 
 const TIMER_INTERVAL = 5000;
 const TOKEN_LIST = Object.keys(SupportTokens).reduce((acc, symbol, idx) => {

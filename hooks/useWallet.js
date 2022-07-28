@@ -4,7 +4,7 @@
 */
 import { useState, useEffect, useReducer, useCallback } from 'react'
 import axios from 'axios'
-import {SupportTokens} from '../utils/SupportTokens'
+import {SupportTokens} from '../app/utils/SupportTokens'
 
 const apiKey = 'EO0m8AeCWdXWsaK0faFFvLGBPwo8ie2B3Sw78W3stNYOVKkEvtL2O90ISog80p9s';
 
@@ -81,14 +81,14 @@ const useWallet = ({address, chain, isLoaded, portfolioDispatch, cryptoPrices}) 
                         symbol,
                         thumbnail,
                         balance: Number(balance)/10**decimals,
-                        exchangeRate: cryptoPrices[symbol]['USD'] || 0,
+                        exchangeRate: cryptoPrices[symbol]?.['USD'] || 0,
                     }
                 });
                 tokenAsset.push({
                     symbol: 'ETH',
                     thumbnail: SupportTokens['ETH']['thumbnail'],
                     balance: Number(nativeResult.data.balance)/10**18,
-                    exchangeRate: cryptoPrices['ETH']['USD'] || 0
+                    exchangeRate: cryptoPrices['ETH']?.['USD'] || 0
                 });
                 tokenAsset = tokenAsset.sort((token1, token2) => token2.balance * token2.exchangeRate - token1.balance * token1.exchangeRate)
                 dispatch({ type: 'FETCH_SUCCESS', payload: {tokenAsset, chain}});
