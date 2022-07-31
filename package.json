@@ -50,5 +50,8 @@
     "tabWidth": 4,
     "semi": false,
     "singleQuote": true
+  },
+  "resolutions": {
+    "react-devtools-core": "4.14.0"
   }
 }

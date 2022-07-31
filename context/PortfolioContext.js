@@ -45,14 +45,14 @@ const InitialState = {
     tokensWorth: 0,
     nftsWorth: 0,
     wallets: [
-        {
-            chain: 'ethereum',
-            address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
-            tokensWorth: 0,
-            nftsWorth: 0,
-            tokenAssets: [],
-            nftAssets: []
-        }
+        // {
+        //     chain: 'ethereum',
+        //     address: '0x11e4857bb9993a50c685a79afad4e6f65d518dda',
+        //     tokensWorth: 0,
+        //     nftsWorth: 0,
+        //     tokenAssets: [],
+        //     nftAssets: []
+        // }
     ],
     nftPrices: []
     

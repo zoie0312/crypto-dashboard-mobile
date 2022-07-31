@@ -10,16 +10,11 @@ import RestaurantItems, {
 import MainSection from '../components/home/MainSection'
 import NFTSection from '../components/home/NFTSection'
 import WalletSection from '../components/home/WalletSection'
-import { CryptoPriceContext } from '../context/CryptoPriceContext'
-import { PortfolioContext } from '../context/PortfolioContext'
+import { useSelector } from 'react-redux'
 //import {walletData} from '../DummyData'
 
-const YELP_API_KEY =
-    'bdRJutLhFAQJ36t7b89CWjHFBU4OKzjt9wvZzcY-nkgmvTqlNMjZWV1eG7iBQ9R74SyfxRg9LWnBAkZY06BtAZAe4d2dfX-2vuX8a1l5V7foctHfX9UKEyoM5ts3YXYx'
-
 export default function Home({ navigation }) {
-    //const cryptoPrices = useContext(CryptoPriceContext);
-    const { wallets } = useContext(PortfolioContext);
+    const wallets = useSelector(state => state.portfolio.wallets);
     const walletAddresses = wallets.map(wallet => ({
         address: wallet.address,
         chain: wallet.chain
@@ -35,7 +30,7 @@ export default function Home({ navigation }) {
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
-                    walletAddresses.map((wallet) => (
+                    wallets.map((wallet) => (
                         <WalletSection 
                             key={wallet.address}
                             address={wallet.address}

@@ -1,5 +1,6 @@
 import { View, StyleSheet, Alert } from 'react-native'
 import React, {useState, useEffect, useReducer, useContext} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     HStack,
@@ -23,7 +24,7 @@ import {Camera, CameraType} from 'expo-camera'
 import BottomTabs from '../components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
 import {CryptoPriceContext} from '../context/CryptoPriceContext'
-//import { useGetCryptoPricesQuery } from '../app/services/api'
+import {addWallet, removeWallet} from '../features/portfolio/portfolioSlice'
 //import { addressData } from '../DummyData'
 
 const QRCodeScanComponent = (props) => {
@@ -64,37 +65,22 @@ const Setting = ({ navigation }) => {
     const [isScanning, setIsScanning] = useState(false);
     const [hasPermission, setHasPermission] = useState(null);
     const [chain, setChain] = useState('ethereum');
-    const {wallets, dispatch} = useContext(PortfolioContext);
+    const wallets = useSelector(state => state.portfolio.wallets);
+    const dispatch = useDispatch();
     const walletAddresses = wallets.map(wallet => ({
         address: wallet.address,
         chain: wallet.chain
     }));
-    // const {data: cryptoPrices} = useGetCryptoPricesQuery();
-    // if (cryptoPrices) {
-    //     console.log('cryptoPrices get, ', cryptoPrices);
-    // }
 
     const goBack = () => {setIsScanning(false)}
 
     const onAddButtonPress = () => {
-        dispatch({
-            type: 'ADD_ADDRESS', 
-            payload: {
-                chain,
-                address: newAddress.toString()
-            } 
-        });
+        dispatch(addWallet({chain, address: newAddress.toString()}));
         setNewAddress(null);
     }
 
     const removeAddress = (address) => {
-        dispatch({
-            type: 'REMOVE_ADDRESS', 
-            payload: {
-                chain,
-                address: address.toString(),
-            } 
-        });
+        dispatch(removeWallet({chain, address: address.toString()}))
     }
     
     useEffect(() => {

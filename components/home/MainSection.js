@@ -1,4 +1,5 @@
 import { View } from 'react-native'
+import { useSelector } from 'react-redux'
 import React, {useContext} from 'react'
 import {
     HStack,
@@ -15,7 +16,9 @@ import { useGlobalize } from 'react-native-globalize';
 
 const MainSection = () => {
     const { formatCurrency, formatNumber } = useGlobalize();
-    const { totalValue, tokensWorth, nftsWorth } = useContext(PortfolioContext);
+    const tokensWorth = useSelector(state => state.portfolio.tokensWorth);
+    const nftsWorth = useSelector(state => state.portfolio.nftsWorth);
+    const totalValue = tokensWorth + nftsWorth;
     const pieChartData = [
         { value: nftsWorth, color: '#e68A00', text: formatNumber(nftsWorth/totalValue, { style: 'percent' }) },
         { value: tokensWorth, color: '#1F7A1F', text: formatNumber(tokensWorth/totalValue, { style: 'percent' }) },

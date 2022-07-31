@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import {
     HStack,
     Text,
@@ -12,9 +13,32 @@ import {
 } from 'native-base'
 import SectionHeader from './SectionHeader'
 import NFTCard from './NFTCard'
+import {selectNftsByWallet} from '../../features/portfolio/portfolioSlice'
 
-const NFTSection = (props) => {
-
+const NFTSection = ({ownerAddress, chain}) => {
+    const nftData = useSelector(state => selectNftsByWallet(state, ownerAddress, chain));
+    let reduceNftData = [];
+    try {
+        reduceNftData = nftData && nftData.reduce((acc, curr, idx) => {
+            if (idx < 20) {
+                acc.push({
+                    title: curr.title,
+                    imageUrl: curr.imageUrl,
+                    contractAddress: curr.contractAddress,
+                    tokenId: curr.tokenId,
+                })
+            }
+            if (idx === 20) {
+                acc.push({
+                    more: true
+                })
+            }
+            return acc;
+        }, []);    
+    } catch (error) {
+        console.log('NFTSection error, ', error);
+    }
+    
     return (
         <VStack>
             {/* <FlatList
@@ -40,7 +64,7 @@ const NFTSection = (props) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
             >
-                {props.nftData.map((data, idx) => (
+                {reduceNftData.map((data, idx) => (
                     data.more ? 
                     <Center  bg="primary.400" p="10" key='more..'>
                         <ChevronRightIcon size='lg'/>

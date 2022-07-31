@@ -1,21 +1,25 @@
 import React, {useRef, useContext, useState} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {Image as RNImage} from 'react-native';
 import {
     Text,
     VStack,
     Image,
 } from 'native-base'
-import useFloorPrice from '../../hooks/useFloorPrice'
-import { PortfolioContext } from '../../context/PortfolioContext'
-import {CryptoPriceContext} from '../../context/CryptoPriceContext'
 import deals from '../../assets/images/deals.png';
+import { useGetCryptoPricesQuery } from '../../app/services/api'
+import { useGetNftFloorPriceQuery } from '../../app/services/api'
 
 const DEFAULT_IMAGE = RNImage.resolveAssetSource(deals).uri;
 
-function NFTCard({ title, imageUrl, contractAddress, floorPrice, priceCurrency }) {
+function NFTCard({ title, imageUrl, contractAddress }) {
     const imgSource = imageUrl? imageUrl : DEFAULT_IMAGE;
-    const cryptoPrices = useContext(CryptoPriceContext);
+    const cryptoPrices = useSelector(state => state.portfolio.cryptoPrices);
+    useGetNftFloorPriceQuery(contractAddress);
+    const nftPrices = useSelector(state => state.portfolio.nftPrices);
     
+    const priceCurrency = nftPrices[contractAddress]?.priceCurrency ?? 'ETH'
+    const floorPrice = nftPrices[contractAddress]?.floorPrice;
     const renderCount = useRef(0);
 
     return (
