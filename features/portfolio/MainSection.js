@@ -10,7 +10,7 @@ import {
     Heading,
 } from 'native-base'
 import { PieChart } from 'react-native-gifted-charts'
-import { pieChartData } from '../../DummyData'
+import { pieChartData } from '../../common/utils/DummyData'
 import { PortfolioContext } from '../../context/PortfolioContext'
 import { useGlobalize } from 'react-native-globalize';
 

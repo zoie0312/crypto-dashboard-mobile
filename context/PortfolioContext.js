@@ -1,6 +1,6 @@
 import {createContext, useReducer, useEffect, useContext} from 'react'
 import cloneDeep from 'lodash.clonedeep'
-import useCryptoPrices from '../hooks/useCryptoPrices';
+import useCryptoPrices from '../common/hooks/useCryptoPrices';
 import {CryptoPriceContext} from './CryptoPriceContext'
 
 // const SampleState = {

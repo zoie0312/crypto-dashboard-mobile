@@ -14,17 +14,12 @@ import {
     Spinner
  } from 'native-base';
  import { AntDesign } from '@expo/vector-icons'
- import { useGlobalize } from 'react-native-globalize';
 import SectionHeader from './SectionHeader' 
 import NFTSection from './NFTSection'
 import TokenSection from './TokenSection'
-import { assetData, NFTData } from '../../DummyData'
-import useNFT from '../../hooks/useNFT'
-import useWallet from '../../hooks/useWallet'
-import { PortfolioContext } from '../../context/PortfolioContext'
-import { CryptoPriceContext } from '../../context/CryptoPriceContext'
-import { NFTPriceContext } from '../../context/NFTPriceContext'
-import { useGetCryptoPricesQuery } from '../../app/services/api'
+import { assetData, NFTData } from '../../common/utils/DummyData'
+import useNFT from '../../common/hooks/useNFT'
+import useWallet from '../../common/hooks/useWallet'
 import { useGetNftsQuery } from '../../app/services/api';
 import { useGetTokenBalanceQuery } from '../../app/services/api';
 import { useGetNativeTokenBalanceQuery } from '../../app/services/api';

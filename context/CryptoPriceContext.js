@@ -1,5 +1,5 @@
 import {createContext, useReducer, useEffect} from 'react'
-import useCryptoPrices from '../hooks/useCryptoPrices';
+import useCryptoPrices from '../common/hooks/useCryptoPrices';
 
 const InitialState = {
     BTC: {USD: 1}, 

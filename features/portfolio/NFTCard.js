@@ -1,20 +1,18 @@
 import React, {useRef, useContext, useState} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {Image as RNImage} from 'react-native';
 import {
     Text,
     VStack,
     Image,
 } from 'native-base'
-import deals from '../../assets/images/deals.png';
-import { useGetCryptoPricesQuery } from '../../app/services/api'
+import default_nft_icon256 from '../../assets/images/default_nft_icon256.png';
 import { useGetNftFloorPriceQuery } from '../../app/services/api'
 
-const DEFAULT_IMAGE = RNImage.resolveAssetSource(deals).uri;
+const DEFAULT_NFT_IMAGE = RNImage.resolveAssetSource(default_nft_icon256).uri;
 
 function NFTCard({ title, imageUrl, contractAddress }) {
     const imgSource = imageUrl? imageUrl : DEFAULT_IMAGE;
-    const cryptoPrices = useSelector(state => state.portfolio.cryptoPrices);
     useGetNftFloorPriceQuery(contractAddress);
     const nftPrices = useSelector(state => state.portfolio.nftPrices);
     
@@ -41,11 +39,10 @@ function NFTCard({ title, imageUrl, contractAddress }) {
                 {title}
             </Text>
             <Image 
-                fallbackSource={{uri: DEFAULT_IMAGE}}
+                fallbackSource={{uri: DEFAULT_NFT_IMAGE}}
                 source={{uri: imgSource}}
                 //onError={imageErrorHandler} 
                 key={imageUrl} 
-                bg='primary.300' 
                 alt='missing image' 
                 flex='6' 
             />

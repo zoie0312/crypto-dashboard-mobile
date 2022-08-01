@@ -2,14 +2,10 @@ import React, { useEffect, useState, useContext } from 'react'
 import { View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Divider, ScrollView } from 'native-base'
-import BottomTabs from '../components/home/BottomTabs'
-import Header from '../components/home/Header'
-import RestaurantItems, {
-    localRestaurants,
-} from '../components/home/RestaurantItems'
-import MainSection from '../components/home/MainSection'
-import NFTSection from '../components/home/NFTSection'
-import WalletSection from '../components/home/WalletSection'
+import BottomTabs from '../common/components/home/BottomTabs'
+import Header from '../common/components/home/Header'
+import MainSection from '../features/portfolio/MainSection'
+import WalletSection from '../features/portfolio/WalletSection'
 import { useSelector } from 'react-redux'
 //import {walletData} from '../DummyData'
 

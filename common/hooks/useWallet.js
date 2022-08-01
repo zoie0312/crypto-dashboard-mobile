@@ -4,7 +4,7 @@
 */
 import { useState, useEffect, useReducer, useCallback } from 'react'
 import axios from 'axios'
-import {SupportTokens} from '../app/utils/SupportTokens'
+import {SupportTokens} from '../../app/utils/SupportTokens'
 
 const apiKey = 'EO0m8AeCWdXWsaK0faFFvLGBPwo8ie2B3Sw78W3stNYOVKkEvtL2O90ISog80p9s';
 

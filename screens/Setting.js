@@ -21,11 +21,12 @@ import {
 } from 'native-base'    
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import {Camera, CameraType} from 'expo-camera'
-import BottomTabs from '../components/home/BottomTabs'
+import BottomTabs from '../common/components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
 import {CryptoPriceContext} from '../context/CryptoPriceContext'
 import {addWallet, removeWallet} from '../features/portfolio/portfolioSlice'
-//import { addressData } from '../DummyData'
+import {api} from '../app/services/api'
+//import { addressData } from '../common/utils/DummyData'
 
 const QRCodeScanComponent = (props) => {
     return (
@@ -80,7 +81,12 @@ const Setting = ({ navigation }) => {
     }
 
     const removeAddress = (address) => {
-        dispatch(removeWallet({chain, address: address.toString()}))
+        const addressText = address.toString();
+        dispatch(removeWallet({chain, address: addressText}));
+        dispatch(api.util.updateQueryData('getNfts', addressText, (draftNfts) => draftNfts = null));
+        dispatch(api.util.updateQueryData('getTokenBalance', addressText, (draftTokenBalance) => draftTokenBalance = null));
+        dispatch(api.util.updateQueryData('getNativeTokenBalance', addressText, (draftNativeTokenBalance) => draftNativeTokenBalance = null));
+
     }
     
     useEffect(() => {

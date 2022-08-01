@@ -3,9 +3,7 @@ import { useDispatch } from 'react-redux'
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Home from './screens/Home'
-import RestaurantDetail from './screens/RestaurantDetail'
 import Setting from './screens/Setting'
-import OrderCompleted from './screens/OrderCompleted'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GlobalizeProvider } from 'react-native-globalize'
 import { api } from './app/services/api'
@@ -29,10 +27,6 @@ export default function RootNavigation() {
                             screenOptions={screenOptions}
                         >
                             <Stack.Screen name="Home" component={Home} />
-                            <Stack.Screen
-                                name="RestaurantDetail"
-                                component={RestaurantDetail}
-                            />
                             <Stack.Screen name="Setting" component={Setting} />
                         </Stack.Navigator>
                     </NavigationContainer>
