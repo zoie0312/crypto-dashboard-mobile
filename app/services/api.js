@@ -1,12 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import Constants from 'expo-constants';
 import { SupportTokens } from '../utils/SupportTokens'
 
-const AlchemyApiKey = "5i3nUfMDsESoLsuo1FwKSTuA78J0fiP8";
-const MoralisApiKey = 'EO0m8AeCWdXWsaK0faFFvLGBPwo8ie2B3Sw78W3stNYOVKkEvtL2O90ISog80p9s';
 const TOKEN_LIST = Object.keys(SupportTokens).reduce((acc, symbol, idx) => {
     acc += idx === 0 ? symbol.toString() : `,${symbol.toString()}`
     return acc
 }, '')
+
+const AlchemyApiKey = Constants.manifest.extra.AlchemyApiKey;
+const MoralisApiKey = Constants.manifest.extra.MoralisApiKey;
+
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
