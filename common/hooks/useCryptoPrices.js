@@ -67,7 +67,7 @@ const useCryptoPrices = ({ initialData, timerCount }) => {
 
         setTimeout(() => {
           clearInterval(timer);
-          console.log('time over');
+          //console.log('time over');
       }, timerCount * TIMER_INTERVAL);
 
         return () => {

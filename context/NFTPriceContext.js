@@ -22,7 +22,7 @@ const InitialState = {
 };
 
 const reducer = (state, action) => {
-    console.log('NFTPriceContext reducer, ', action.type);
+    //console.log('NFTPriceContext reducer, ', action.type);
     const nextState = cloneDeep(state);
 
     switch (action.type) {

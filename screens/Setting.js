@@ -21,6 +21,7 @@ import {
 } from 'native-base'    
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons'
 import {Camera, CameraType} from 'expo-camera'
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import BottomTabs from '../common/components/home/BottomTabs'
 import { PortfolioContext } from '../context/PortfolioContext' 
 import {CryptoPriceContext} from '../context/CryptoPriceContext'
@@ -31,14 +32,14 @@ import {api} from '../app/services/api'
 const QRCodeScanComponent = (props) => {
     return (
         <VStack flex='1' space="5">
-            <ArrowBackIcon m="5"
+            <ArrowBackIcon size="7" m="5"
                 onPress={props.goBack}
             />
             <Camera
                 style={{flex: 2}}
                 type={CameraType.back}
                 barCodeScannerSettings={{
-                    barCodeTypes: ['qr'],
+                    barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
                 }}
                 onBarCodeScanned={(...args) => {
                     Alert.alert(

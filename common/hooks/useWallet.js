@@ -38,7 +38,7 @@ const dataFetchReducer = (state, action) => {
 const useWallet = ({address, chain, isLoaded, portfolioDispatch, cryptoPrices}) => {
     //const [running, setRunning] = useState(false);
 
-    console.log('useWallet called')
+    //console.log('useWallet called')
     const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,
@@ -70,7 +70,7 @@ const useWallet = ({address, chain, isLoaded, portfolioDispatch, cryptoPrices}) 
                     }
                 };
                 const [result, nativeResult] = await Promise.all([axios(balanceConfig), axios(nativeBalanceConfig)]); 
-                console.log('fetch tokens result ', result);
+                //console.log('fetch tokens result ', result);
                 const filterResult = result.data.filter(token => {
                     return  SupportTokens[token.symbol] && 
                         (SupportTokens[token.symbol]['token_address'] === token['token_address'])
@@ -103,7 +103,7 @@ const useWallet = ({address, chain, isLoaded, portfolioDispatch, cryptoPrices}) 
                     }
                 );
             } catch (error) {
-                console.log('useWallet fetchData ', error);
+                //console.log('useWallet fetchData ', error);
                 dispatch({ type: 'FETCH_FAILURE' })
             }
         }

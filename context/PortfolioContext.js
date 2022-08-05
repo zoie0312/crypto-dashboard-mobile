@@ -67,7 +67,7 @@ const reducer = (state, action) => {
     const nextState = cloneDeep(state);
     const {address, chain} = action.payload;
     const targetWallet = nextState.wallets.find(wallet => (wallet.chain === chain) && (wallet.address === address));
-    console.log('PortfolioContext reducer, ', action.type);
+    //console.log('PortfolioContext reducer, ', action.type);
     
     switch (action.type) {
         case 'ADD_ADDRESS':
@@ -99,7 +99,7 @@ const reducer = (state, action) => {
             });
             nextState.tokensWorth = tokensWorth;
             nextState.totalValue = nextState.nftsWorth + nextState.tokensWorth;
-            console.log('new portfolio state ', nextState);
+            //console.log('new portfolio state ', nextState);
             break;
 
         case 'UPDATE_PORTFOLIO_NFTS':

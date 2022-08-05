@@ -20,7 +20,6 @@ export default function RootNavigation() {
 
     return (
             <GlobalizeProvider locale="en" currency="USD">
-                <SafeAreaProvider>
                     <NavigationContainer>
                         <Stack.Navigator
                             initialRouteName="Setting"
@@ -30,7 +29,6 @@ export default function RootNavigation() {
                             <Stack.Screen name="Setting" component={Setting} />
                         </Stack.Navigator>
                     </NavigationContainer>
-                </SafeAreaProvider>
             </GlobalizeProvider>
     )
 }

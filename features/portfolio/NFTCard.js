@@ -31,10 +31,10 @@ function NFTCard({ title, imageUrl, contractAddress }) {
             bg="white"
             shadow={2}
         >
-            <Text>
+            {/* <Text>
                 {renderCount.current+=1}
                 {console.log('NFTCard render ', renderCount.current)}
-            </Text>
+            </Text> */}
             <Text fontSize="sm" flex="2" px="2">
                 {title}
             </Text>

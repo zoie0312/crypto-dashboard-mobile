@@ -108,7 +108,6 @@ export const api = createApi({
                 }
             }),
             transformResponse: (resp, meta, ownerAddress) => {
-                console.log('getNativeTokenBalance query resp, ', resp);
                 return {
                     ownerAddress,
                     balance: resp.balance,

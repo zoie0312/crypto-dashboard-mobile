@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useEffect } from 'react'
+import 'react-native-gesture-handler';
 import RootNavigation from './navigation'
 import { NativeBaseProvider } from 'native-base'
 import { LinearGradient } from 'expo-linear-gradient'

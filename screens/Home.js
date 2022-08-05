@@ -15,7 +15,7 @@ export default function Home({ navigation }) {
         address: wallet.address,
         chain: wallet.chain
     }));
-    console.log('Home: wallet addresses= ', walletAddresses);
+    //console.log('Home: wallet addresses= ', walletAddresses);
 
     return (
         <SafeAreaView backgroundColor="#e6f7ff" flex={1}>

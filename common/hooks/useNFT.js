@@ -127,7 +127,7 @@ const useNFT = ({address, chain, isLoaded, portfolioDispatch, nftPriceDispatch, 
                     acc.push(result);
                     return acc;
                 }, [])
-                console.log('nftPrices ', nftPrices);
+                //console.log('nftPrices ', nftPrices);
                 nftPriceDispatch(
                     {
                         type: 'UPDATE_NFT_PRICES',
