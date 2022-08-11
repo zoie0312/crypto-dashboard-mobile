@@ -20,7 +20,7 @@ const NFTSection = ({ownerAddress, chain}) => {
     let reduceNftData = [];
     try {
         reduceNftData = nftData && nftData.reduce((acc, curr, idx) => {
-            if (idx < 20) {
+            if (idx < 6) {
                 acc.push({
                     title: curr.title,
                     imageUrl: curr.imageUrl,
@@ -28,7 +28,7 @@ const NFTSection = ({ownerAddress, chain}) => {
                     tokenId: curr.tokenId,
                 })
             }
-            if (idx === 20) {
+            if (idx === 6) {
                 acc.push({
                     more: true
                 })
@@ -66,8 +66,8 @@ const NFTSection = ({ownerAddress, chain}) => {
             >
                 {reduceNftData.map((data, idx) => (
                     data.more ? 
-                    <Center  bg="primary.400" p="10" key='more..'>
-                        <ChevronRightIcon size='lg'/>
+                    <Center bg="primary.400" p="6" key='more..'>
+                        <ChevronRightIcon size='xl' onPress={() => console.log('more nfts ...')}/>
                     </Center> :
                      <NFTCard
                         key={data.tokenId}

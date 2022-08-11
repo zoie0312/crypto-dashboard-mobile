@@ -40,7 +40,10 @@ function NFTCard({ title, imageUrl, contractAddress }) {
             </Text>
             <Image 
                 fallbackSource={{uri: DEFAULT_NFT_IMAGE}}
-                source={{uri: imgSource}}
+                source={{
+                    uri: imgSource,
+                    cache: 'only-if-cached'
+                }}
                 //onError={imageErrorHandler} 
                 key={imageUrl} 
                 alt='missing image' 
