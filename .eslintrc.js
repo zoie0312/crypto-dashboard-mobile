@@ -4,21 +4,27 @@ module.exports = {
         "es2021": true,
         "react-native/react-native": true,
     },
+    // "extends": [
+    //     "eslint:recommended",
+    //     "plugin:react/recommended"
+    // ],
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
+        "universe/native", 
+        "plugin:react-hooks/recommended",
+        "prettier",
+        "plugin:prettier/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": true,
         },
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
     },
-    "plugins": [
-        "react",
-        "react-native"
-    ],
+    "plugins": ["react", "react-native", "react-hooks", "prettier"],
     "rules": {
-    }
-}
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "prettier/prettier": "warn",
+    },
+};
