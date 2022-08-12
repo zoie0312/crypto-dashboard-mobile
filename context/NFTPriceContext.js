@@ -1,5 +1,5 @@
-import {createContext, useReducer, useEffect} from 'react'
-import cloneDeep from 'lodash.clonedeep'
+import cloneDeep from "lodash.clonedeep";
+import { createContext, useReducer } from "react";
 
 // const SampleState = {
 //     nftPrices: [
@@ -10,15 +10,15 @@ import cloneDeep from 'lodash.clonedeep'
 //                     contractAddress: '0x534647777',
 //                     floorPrice: 0.3,
 //                     priceCurrency: "ETH",
-//                     floorPriceInUSD: 1000 
+//                     floorPriceInUSD: 1000
 //                 }
 //             ]
 //         }
 //     ]
-// } 
+// }
 
 const InitialState = {
-    nftPrices: []
+    nftPrices: [],
 };
 
 const reducer = (state, action) => {
@@ -26,65 +26,61 @@ const reducer = (state, action) => {
     const nextState = cloneDeep(state);
 
     switch (action.type) {
-        case 'UPDATE_NFT_PRICES':
+        case "UPDATE_NFT_PRICES": {
             const { priceData, chain } = action.payload;
-            
-            const existingPriceDataOfChain = nextState.nftPrices.find(item => item.chain === chain);
+
+            const existingPriceDataOfChain = nextState.nftPrices.find(
+                (item) => item.chain === chain
+            );
             if (existingPriceDataOfChain) {
-                priceData.forEach(data => {
-                    const {contractAddress, floorPrice, priceCurrency, floorPriceInUSD} = data;
-                    const targetNft = existingPriceDataOfChain.nftPriceData.find(item => item.contractAddress === contractAddress);
+                priceData.forEach((data) => {
+                    const {
+                        contractAddress,
+                        floorPrice,
+                        priceCurrency,
+                        floorPriceInUSD,
+                    } = data;
+                    const targetNft =
+                        existingPriceDataOfChain.nftPriceData.find(
+                            (item) => item.contractAddress === contractAddress
+                        );
                     if (!targetNft) {
                         existingPriceDataOfChain.nftPriceData.push({
                             contractAddress,
                             floorPrice,
                             priceCurrency,
-                            floorPriceInUSD
-                        })
-                    }else {
+                            floorPriceInUSD,
+                        });
+                    } else {
                         targetNft.floorPrice = floorPrice;
                         targetNft.priceCurrency = priceCurrency;
                         targetNft.floorPriceInUSD = floorPriceInUSD;
                     }
-                    
-                })
-            }else {
+                });
+            } else {
                 nextState.nftPrices.push({
                     chain,
-                    nftPriceData: priceData
-                }) 
+                    nftPriceData: priceData,
+                });
             }
             //console.log('new NFTPrice state ', nextState);
             break;
-        
-        default: 
+        }
+        default:
             throw new Error();
     }
 
     return nextState;
-}
+};
 
 export const NFTPriceContext = createContext(InitialState);
 
 export const NFTPriceContextProvider = (props) => {
     const [state, dispatch] = useReducer(reducer, InitialState);
 
-    const updateNftPrices = ({priceData, chain}) => {
-        dispatch({
-            type: 'UPDATE_NFT_PRICES',
-            payload: {
-                priceData,
-                chain
-            }
-        })
-    }
-    
     return (
-        <NFTPriceContext.Provider
-            value={{...state, dispatch}}
-        >
+        <NFTPriceContext.Provider value={{ ...state, dispatch }}>
             {props.children}
         </NFTPriceContext.Provider>
-    )
-    
-}
+    );
+};

@@ -1,13 +1,9 @@
-import { View, StyleSheet, Alert } from "react-native";
-import React, { useState, useEffect, useReducer, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import { Camera, CameraType } from "expo-camera";
 import {
     HStack,
-    Center,
     Text,
-    ThreeDotsIcon,
-    Divider,
     VStack,
     Heading,
     ScrollView,
@@ -19,14 +15,14 @@ import {
     ArrowBackIcon,
     Select,
 } from "native-base";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { Camera, CameraType } from "expo-camera";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import BottomTabs from "../common/components/home/BottomTabs";
-import { PortfolioContext } from "../context/PortfolioContext";
-import { CryptoPriceContext } from "../context/CryptoPriceContext";
-import { addWallet, removeWallet } from "../features/portfolio/portfolioSlice";
+import React, { useState, useEffect } from "react";
+import { View, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector, useDispatch } from "react-redux";
+
 import { api } from "../app/services/api";
+import BottomTabs from "../common/components/home/BottomTabs";
+import { addWallet, removeWallet } from "../features/portfolio/portfolioSlice";
 //import { addressData } from '../common/utils/DummyData'
 
 const QRCodeScanComponent = (props) => {
@@ -50,7 +46,7 @@ const QRCodeScanComponent = (props) => {
                     props.setNewAddress(args[0].data);
                 }}
             />
-            <VStack flex="1"></VStack>
+            <VStack flex="1" />
         </VStack>
     );
 };

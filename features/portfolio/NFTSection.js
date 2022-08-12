@@ -1,44 +1,38 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import {
-    HStack,
-    Text,
-    Center,
-    ChevronRightIcon,
-    VStack,
-    Box,
-    Image,
-    ScrollView,
-    FlatList
-} from 'native-base'
-import SectionHeader from './SectionHeader'
-import NFTCard from './NFTCard'
-import {selectNftsByWallet} from '../../features/portfolio/portfolioSlice'
+import { Center, ChevronRightIcon, VStack, ScrollView } from "native-base";
+import React from "react";
+import { useSelector } from "react-redux";
 
-const NFTSection = ({ownerAddress, chain}) => {
-    const nftData = useSelector(state => selectNftsByWallet(state, ownerAddress, chain));
+import { selectNftsByWallet } from "../../features/portfolio/portfolioSlice";
+import NFTCard from "./NFTCard";
+
+const NFTSection = ({ ownerAddress, chain }) => {
+    const nftData = useSelector((state) =>
+        selectNftsByWallet(state, ownerAddress, chain)
+    );
     let reduceNftData = [];
     try {
-        reduceNftData = nftData && nftData.reduce((acc, curr, idx) => {
-            if (idx < 6) {
-                acc.push({
-                    title: curr.title,
-                    imageUrl: curr.imageUrl,
-                    contractAddress: curr.contractAddress,
-                    tokenId: curr.tokenId,
-                })
-            }
-            if (idx === 6) {
-                acc.push({
-                    more: true
-                })
-            }
-            return acc;
-        }, []);    
+        reduceNftData =
+            nftData &&
+            nftData.reduce((acc, curr, idx) => {
+                if (idx < 6) {
+                    acc.push({
+                        title: curr.title,
+                        imageUrl: curr.imageUrl,
+                        contractAddress: curr.contractAddress,
+                        tokenId: curr.tokenId,
+                    });
+                }
+                if (idx === 6) {
+                    acc.push({
+                        more: true,
+                    });
+                }
+                return acc;
+            }, []);
     } catch (error) {
-        console.log('NFTSection error, ', error);
+        console.log("NFTSection error, ", error);
     }
-    
+
     return (
         <VStack>
             {/* <FlatList
@@ -62,25 +56,30 @@ const NFTSection = ({ownerAddress, chain}) => {
             <ScrollView
                 pl="3"
                 showsHorizontalScrollIndicator={false}
-                horizontal={true}
+                horizontal
             >
-                {reduceNftData.map((data, idx) => (
-                    data.more ? 
-                    <Center bg="primary.400" p="6" key='more..'>
-                        <ChevronRightIcon size='xl' onPress={() => console.log('more nfts ...')}/>
-                    </Center> :
-                     <NFTCard
-                        key={data.tokenId}
-                        title={data.title}
-                        imageUrl={data.imageUrl}
-                        contractAddress={data.contractAddress}
-                        floorPrice={data.floorPrice}
-                        priceCurrency={data.priceCurrency}
-                    />
-                ))}
+                {reduceNftData.map((data, idx) =>
+                    data.more ? (
+                        <Center bg="primary.400" p="6" key="more..">
+                            <ChevronRightIcon
+                                size="xl"
+                                onPress={() => console.log("more nfts ...")}
+                            />
+                        </Center>
+                    ) : (
+                        <NFTCard
+                            key={data.tokenId}
+                            title={data.title}
+                            imageUrl={data.imageUrl}
+                            contractAddress={data.contractAddress}
+                            floorPrice={data.floorPrice}
+                            priceCurrency={data.priceCurrency}
+                        />
+                    )
+                )}
             </ScrollView>
         </VStack>
-    )
-}
+    );
+};
 
-export default NFTSection
+export default NFTSection;
