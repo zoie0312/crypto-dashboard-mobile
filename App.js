@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import "react-native-gesture-handler";
 import { loadCldr } from "react-native-globalize";
 import { Provider as ReduxProvider } from "react-redux";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { store } from "./app/store";
 import { PromiseHelperAllSettled } from "./app/utils/PromiseHelperAllSettled";
@@ -34,7 +35,9 @@ export default function App() {
                 <NFTPriceContextProvider>
                     <PortfolioContextProvider>
                         <ReduxProvider store={store}>
-                            <RootNavigation />
+                            <SafeAreaProvider>
+                                <RootNavigation />
+                            </SafeAreaProvider>
                         </ReduxProvider>
                     </PortfolioContextProvider>
                 </NFTPriceContextProvider>

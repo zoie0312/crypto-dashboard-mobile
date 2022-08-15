@@ -1,11 +1,13 @@
+import { useNavigation } from "@react-navigation/native";
 import { Center, ChevronRightIcon, VStack, ScrollView } from "native-base";
 import React from "react";
 import { useSelector } from "react-redux";
 
+import NFTCard from "../../common/components/NFTCard";
 import { selectNftsByWallet } from "../../features/portfolio/portfolioSlice";
-import NFTCard from "./NFTCard";
 
 const NFTSection = ({ ownerAddress, chain }) => {
+    const navigation = useNavigation();
     const nftData = useSelector((state) =>
         selectNftsByWallet(state, ownerAddress, chain)
     );
@@ -14,7 +16,7 @@ const NFTSection = ({ ownerAddress, chain }) => {
         reduceNftData =
             nftData &&
             nftData.reduce((acc, curr, idx) => {
-                if (idx < 6) {
+                if (idx < 20) {
                     acc.push({
                         title: curr.title,
                         imageUrl: curr.imageUrl,
@@ -22,7 +24,7 @@ const NFTSection = ({ ownerAddress, chain }) => {
                         tokenId: curr.tokenId,
                     });
                 }
-                if (idx === 6) {
+                if (idx === 20) {
                     acc.push({
                         more: true,
                     });
@@ -32,6 +34,14 @@ const NFTSection = ({ ownerAddress, chain }) => {
     } catch (error) {
         console.log("NFTSection error, ", error);
     }
+
+    const onRightButtonPressed = () => {
+        navigation.navigate("WalletDetail", {
+            screen: "NFTView",
+            ownerAddress,
+            chain,
+        });
+    };
 
     return (
         <VStack>
@@ -63,7 +73,7 @@ const NFTSection = ({ ownerAddress, chain }) => {
                         <Center bg="primary.400" p="6" key="more..">
                             <ChevronRightIcon
                                 size="xl"
-                                onPress={() => console.log("more nfts ...")}
+                                onPress={onRightButtonPressed}
                             />
                         </Center>
                     ) : (
@@ -74,6 +84,7 @@ const NFTSection = ({ ownerAddress, chain }) => {
                             contractAddress={data.contractAddress}
                             floorPrice={data.floorPrice}
                             priceCurrency={data.priceCurrency}
+                            size="small"
                         />
                     )
                 )}

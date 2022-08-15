@@ -19,7 +19,7 @@ export default function Home({ navigation }) {
     //console.log('Home: wallet addresses= ', walletAddresses);
 
     return (
-        <SafeAreaView backgroundColor="#e6f7ff" flex={1}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#e6f7ff" }}>
             <View>
                 <Header navigation={navigation} />
             </View>

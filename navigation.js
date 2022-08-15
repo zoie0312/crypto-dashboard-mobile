@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { api } from "./app/services/api";
 import Home from "./screens/Home";
 import Setting from "./screens/Setting";
+import WalletDetail from "./screens/WalletDetail";
 
 export default function RootNavigation() {
     const dispatch = useDispatch();
@@ -21,10 +22,14 @@ export default function RootNavigation() {
         <GlobalizeProvider locale="en" currency="USD">
             <NavigationContainer>
                 <Stack.Navigator
-                    initialRouteName="Setting"
+                    initialRouteName="Home"
                     screenOptions={screenOptions}
                 >
                     <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen
+                        name="WalletDetail"
+                        component={WalletDetail}
+                    />
                     <Stack.Screen name="Setting" component={Setting} />
                 </Stack.Navigator>
             </NavigationContainer>

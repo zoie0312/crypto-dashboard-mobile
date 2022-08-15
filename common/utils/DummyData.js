@@ -63,28 +63,28 @@ export const NFTData = [
         title: "Fomo Dog #310",
         imageUrl:
             "https://res.cloudinary.com/alchemyapi/image/upload/w_256,h_256/mainnet/834b0c1d604f74fbdfbf110aa28e48d8.png",
-        price: 3.5,
-        currency: "eth",
+        floorPrice: 3.5,
+        priceCurrency: "ETH",
     },
     {
         title: "GalaXY Kats #2809",
         imageUrl:
             "https://res.cloudinary.com/alchemyapi/image/upload/w_256,h_256/mainnet/01a771154727397ea3455b1a9a8ec94d.png",
-        price: 0.5,
-        currency: "eth",
+        floorPrice: 0.5,
+        priceCurrency: "ETH",
     },
     {
         title: "Chicken 7687",
         imageUrl:
             "https://static.debank.com/image/matic_nft/local_url/a08c12b657bd46b760072ce37adb7051/ad0c0740193cff946c2e0afeae175525.png",
-        price: 0.59,
-        currency: "eth",
+        floorPrice: 0.59,
+        priceCurrency: "ETH",
     },
     {
         title: "RR Car #408",
         imageUrl:
             "https://static.debank.com/image/matic_nft/local_url/d17ff48b501d2103185432e5d9692817/e19f165d7442df87b54dcdc9dc480242.png",
-        price: 0.123,
-        currency: "eth",
+        floorPrice: 0.123,
+        pricepriceCurrency: "ETH",
     },
 ];
