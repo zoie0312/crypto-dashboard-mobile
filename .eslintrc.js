@@ -1,5 +1,5 @@
 module.exports = {
-    "env": {
+    env: {
         "browser": true,
         "es2021": true,
         "react-native/react-native": true,
@@ -8,21 +8,21 @@ module.exports = {
     //     "eslint:recommended",
     //     "plugin:react/recommended"
     // ],
-    "extends": [
-        "universe/native", 
+    extends: [
+        "universe/native",
         "plugin:react-hooks/recommended",
         "prettier",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
     ],
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true,
+    parserOptions: {
+        ecmaFeatures: {
+            jsx: true,
         },
-        "ecmaVersion": "latest",
-        "sourceType": "module",
+        ecmaVersion: "latest",
+        sourceType: "module",
     },
-    "plugins": ["react", "react-native", "react-hooks", "prettier"],
-    "rules": {
+    plugins: ["react", "react-native", "react-hooks", "prettier"],
+    rules: {
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
         "prettier/prettier": "warn",

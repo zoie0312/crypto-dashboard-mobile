@@ -82,8 +82,6 @@ const NFTSection = ({ ownerAddress, chain }) => {
                             title={data.title}
                             imageUrl={data.imageUrl}
                             contractAddress={data.contractAddress}
-                            floorPrice={data.floorPrice}
-                            priceCurrency={data.priceCurrency}
                             size="small"
                         />
                     )

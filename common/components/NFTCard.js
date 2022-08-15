@@ -11,7 +11,7 @@ const DEFAULT_NFT_IMAGE = RNImage.resolveAssetSource(default_nft_icon256).uri;
 const getStyle = (size) => {
     return {
         my: size === "big" ? "3" : "4",
-        mr: size === "big" ? "" : "3",
+        mr: size === "big" ? "0" : "3",
         borderRadius: size === "big" ? "xl" : "lg",
         h: size === "big" ? "80" : "56",
         w: size === "big" ? "80" : "40",
