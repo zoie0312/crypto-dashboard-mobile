@@ -21,7 +21,7 @@ import TokenSection from "./TokenSection";
 
 const WalletSection = ({ chain, address, ...props }) => {
     const { isFetching: isFetchingNfts, refetch: refetchWalletNfts } =
-        useGetNftsQuery(address);
+        useGetNftsQuery({ ownerAddress: address });
     const { isFetching: isFetchingTokens, refetch: refetchWalletTokens } =
         useGetTokenBalanceQuery(address);
     const {

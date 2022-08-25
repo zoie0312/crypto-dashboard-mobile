@@ -1,9 +1,8 @@
 import { Text, VStack, Image, Center } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { Image as RNImage } from "react-native";
 import { useSelector } from "react-redux";
 
-import { useGetNftFloorPriceQuery } from "../../app/services/api";
 import default_nft_icon256 from "../../assets/images/default_nft_icon256.png";
 
 const DEFAULT_NFT_IMAGE = RNImage.resolveAssetSource(default_nft_icon256).uri;
@@ -25,8 +24,8 @@ const getStyle = (size) => {
 };
 
 function NFTCard({ title, imageUrl, contractAddress, size }) {
+    const [imageLoading, setImageLoading] = useState(false);
     const imgSource = imageUrl ? imageUrl : DEFAULT_NFT_IMAGE;
-    useGetNftFloorPriceQuery(contractAddress);
     const nftPrices = useSelector((state) => state.portfolio.nftPrices);
 
     const priceCurrency = nftPrices[contractAddress]?.priceCurrency ?? "ETH";
@@ -44,7 +43,7 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
         imageSize,
         priceFlex,
     } = getStyle(size);
-    //const renderCount = useRef(0);
+    //const renderCount = useRef(1);
 
     return (
         <VStack
@@ -58,20 +57,29 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
             shadow={2}
         >
             {/* <Text>
-                {renderCount.current+=1}
-                {console.log('NFTCard render ', renderCount.current)}
+                {console.log(`${title}  ${renderCount.current}`)}
+                {renderCount.current++}
             </Text> */}
             <Text fontSize={fontSize} flex={titleFlex} px={textPx}>
                 {title}
             </Text>
             <Center flex={centerFlex}>
+                {imageLoading && (
+                    <Image
+                        source={require("../../assets/images/question_document_icon256.png")}
+                        size={imageSize}
+                        alt="placeholder"
+                        style={{ position: "absolute" }}
+                    />
+                )}
                 <Image
                     fallbackSource={{ uri: DEFAULT_NFT_IMAGE }}
                     source={{
                         uri: imgSource,
                         cache: "only-if-cached",
                     }}
-                    //onError={imageErrorHandler}
+                    onLoadStart={() => setImageLoading(true)}
+                    onLoadEnd={() => setImageLoading(false)}
                     key={imageUrl}
                     alt="missing image"
                     size={imageSize}
@@ -85,4 +93,4 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
     );
 }
 
-export default NFTCard;
+export default React.memo(NFTCard);

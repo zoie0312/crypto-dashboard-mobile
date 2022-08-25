@@ -22,22 +22,23 @@ export const api = createApi({
             }),
         }),
         getNfts: builder.query({
-            query: (ownerAddress) => ({
-                url: `https://eth-mainnet.alchemyapi.io/nft/v2/${AlchemyApiKey}/getNFTs/?owner=${ownerAddress}`,
+            query: ({ownerAddress, pageKey} = {ownerAddress, undefined}) => ({
+                url: `https://eth-mainnet.alchemyapi.io/nft/v2/${AlchemyApiKey}/getNFTs/?owner=${ownerAddress}&pageKey=${pageKey}`,
             }),
-            transformResponse: (resp, meta, ownerAddress) => {
+            transformResponse: (resp, meta, { ownerAddress, pageKey }) => {
                 const result = {
                     ownerAddress,
                     nfts: [],
+                    pageKey: resp.pageKey,
                 };
                 try {
                     result.nfts = resp?.ownedNfts.reduce((acc, item) => {
-                        const { title, error } = item;
-                        if (!error) {
+                        const { title, error, contract } = item;
+                        if (!error && contract && contract.address) {
                             acc.push({
                                 title,
-                                contractAddress: item?.contract?.address,
-                                tokenId: title + item.id.tokenId,
+                                contractAddress: contract.address,
+                                tokenId: contract.address + item.id.tokenId,
                                 imageUrl: item.media[0]["gateway"],
                             });
                         }
@@ -48,6 +49,31 @@ export const api = createApi({
                 }
 
                 return result;
+            },
+            async onCacheEntryAdded(
+                arg,
+                {
+                    updateCachedData,
+                    cacheDataLoaded,
+                    cacheEntryRemoved,
+                    dispatch,
+                }
+            ) {
+                const cacheData = await cacheDataLoaded;
+                if (cacheData?.data?.pageKey) {
+                    dispatch(api.util.updateQueryData("getNfts", {ownerAddress: cacheData.data.ownerAddress}, (draft) => {
+                        draft.pageKey = cacheData.data.pageKey;
+                    }))
+                    const nftAddresses = cacheData.data.nfts.map(
+                        (nft) => nft.contractAddress
+                    );
+                    const uniqAddresses = [...new Set(nftAddresses)];
+                    uniqAddresses.forEach((address) =>
+                        dispatch(
+                            api.endpoints.getNftFloorPrice.initiate(address)
+                        )
+                    );
+                }
             },
         }),
         getNftFloorPrice: builder.query({
