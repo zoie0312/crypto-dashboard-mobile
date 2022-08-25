@@ -278,6 +278,7 @@ export const portfolioSlice = createSlice({
                                         ? nft.floorPriceInUSD
                                         : 0;
                                 });
+                            wallet.nftsWorth = walletNftsWorth;
                             nftsWorth += walletNftsWorth;
                         });
                         state.nftsWorth = nftsWorth;
@@ -316,6 +317,24 @@ export const selectTokensByWallet = createSelector(
                 wallet.chain === chain && wallet.address === walletAddress
         );
         return targetWallet?.tokenAssets || [];
+    }
+);
+
+export const selectAssetValueByWallet = createSelector(
+    [
+        selectAllWallets,
+        (state, walletAddress) => walletAddress,
+        (state, walletAddress, chain) => chain,
+    ],
+    (wallets, walletAddress, chain) => {
+        const targetWallet = wallets.find(
+            (wallet) =>
+                wallet.chain === chain && wallet.address === walletAddress
+        );
+        return {
+            nftsWorth: targetWallet?.nftsWorth || 0,
+            tokensWorth: targetWallet?.tokensWorth || 0,
+        };
     }
 );
 

@@ -10,7 +10,6 @@ import { selectNftsByWallet } from "../portfolio/portfolioSlice";
 
 function NFTView({ navigation, route }) {
     const { ownerAddress, chain } = route?.params;
-    console.log("NFTView render ", ownerAddress);
     const nftData = useSelector((state) =>
         selectNftsByWallet(state, ownerAddress, chain)
     );
@@ -57,7 +56,7 @@ function NFTView({ navigation, route }) {
     };
 
     return (
-        <View style={{ flex: 1 }} >
+        <View style={{ flex: 1 }}>
             <FlatList
                 data={nftData}
                 renderItem={renderRow}

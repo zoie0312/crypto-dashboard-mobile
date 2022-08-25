@@ -8,14 +8,10 @@ import {
 } from "native-base";
 import React from "react";
 import { useGlobalize } from "react-native-globalize";
+import { useSelector } from "react-redux";
 
 import { Colors } from "../../app/utils/Constants";
-
-const WalletData = {
-    address: "0x34653gtr5666666",
-    tokensWorth: 3000,
-    nftsWorth: 1000,
-};
+import { selectAssetValueByWallet } from "../portfolio/portfolioSlice";
 
 const getAssetFlexValue = (value) => {
     if (value > 0.05) {
@@ -25,9 +21,12 @@ const getAssetFlexValue = (value) => {
     }
 };
 
-function WalletHeader({ navigation }) {
+function WalletHeader({ navigation, address, chain }) {
     const { formatCurrency } = useGlobalize();
-    const { address, tokensWorth, nftsWorth } = WalletData;
+    const assetsValue = useSelector((state) =>
+        selectAssetValueByWallet(state, address, chain)
+    );
+    const { tokensWorth, nftsWorth } = assetsValue;
     const totalValue = tokensWorth + nftsWorth;
     const tokensFlex = getAssetFlexValue(tokensWorth / totalValue);
     const nftsFlex = getAssetFlexValue(nftsWorth / totalValue);
@@ -38,7 +37,7 @@ function WalletHeader({ navigation }) {
         <VStack my="3">
             <HStack alignItems="center" justifyContent="space-between">
                 <ChevronLeftIcon size="7" m="5" onPress={goBack} />
-                <Heading>{address}</Heading>
+                <Heading size="xs">{address}</Heading>
                 <Box flex="1" />
             </HStack>
             <VStack alignItems="flex-start" py="2" px="5">

@@ -14,7 +14,11 @@ function WalletDetail({ navigation, route }) {
         <SafeAreaView
             style={{ flex: 1, backgroundColor: Colors.AppBackground }}
         >
-            <WalletHeader navigation={navigation} />
+            <WalletHeader
+                navigation={navigation}
+                address={ownerAddress}
+                chain={chain}
+            />
 
             <Tab.Navigator initialRouteName="TokenView">
                 <Tab.Screen
