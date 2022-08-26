@@ -4,8 +4,8 @@ import * as React from "react";
 import { useEffect } from "react";
 import "react-native-gesture-handler";
 import { loadCldr } from "react-native-globalize";
-import { Provider as ReduxProvider } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider as ReduxProvider } from "react-redux";
 
 import { store } from "./app/store";
 import { PromiseHelperAllSettled } from "./app/utils/PromiseHelperAllSettled";

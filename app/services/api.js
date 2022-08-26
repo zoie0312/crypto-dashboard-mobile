@@ -22,7 +22,9 @@ export const api = createApi({
             }),
         }),
         getNfts: builder.query({
-            query: ({ownerAddress, pageKey} = {ownerAddress, undefined}) => ({
+            query: (
+                { ownerAddress, pageKey } = { ownerAddress, undefined }
+            ) => ({
                 url: `https://eth-mainnet.alchemyapi.io/nft/v2/${AlchemyApiKey}/getNFTs/?owner=${ownerAddress}&pageKey=${pageKey}`,
             }),
             transformResponse: (resp, meta, { ownerAddress, pageKey }) => {
@@ -61,9 +63,15 @@ export const api = createApi({
             ) {
                 const cacheData = await cacheDataLoaded;
                 if (cacheData?.data?.pageKey) {
-                    dispatch(api.util.updateQueryData("getNfts", {ownerAddress: cacheData.data.ownerAddress}, (draft) => {
-                        draft.pageKey = cacheData.data.pageKey;
-                    }))
+                    dispatch(
+                        api.util.updateQueryData(
+                            "getNfts",
+                            { ownerAddress: cacheData.data.ownerAddress },
+                            (draft) => {
+                                draft.pageKey = cacheData.data.pageKey;
+                            }
+                        )
+                    );
                     const nftAddresses = cacheData.data.nfts.map(
                         (nft) => nft.contractAddress
                     );
