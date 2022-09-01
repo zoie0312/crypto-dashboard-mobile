@@ -1,6 +1,7 @@
 import { Text, VStack, Image, Center } from "native-base";
 import React, { useState } from "react";
 import { Image as RNImage } from "react-native";
+import FastImage from "react-native-fast-image";
 import { useSelector } from "react-redux";
 
 import default_nft_icon256 from "../../assets/images/default_nft_icon256.png";
@@ -18,13 +19,17 @@ const getStyle = (size) => {
         textPx: size === "big" ? "5" : "2",
         titleFlex: size === "big" ? "1" : "2",
         centerFlex: size === "big" ? "7" : "6",
-        imageSize: size === "big" ? "56" : "32",
+        loadingImageSize: "16",
+        errorImageSize: size === "big" ? "48" : "32",
+        imageWidth: size === "big" ? 192 : 128,
+        imageHeight: size === "big" ? 192 : 128,
         priceFlex: size === "big" ? "1" : "1",
     };
 };
 
 function NFTCard({ title, imageUrl, contractAddress, size }) {
     const [imageLoading, setImageLoading] = useState(false);
+    const [imageError, setImageError] = useState(false);
     const imgSource = imageUrl ? imageUrl : DEFAULT_NFT_IMAGE;
     const nftPrices = useSelector((state) => state.portfolio.nftPrices);
 
@@ -40,7 +45,10 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
         textPx,
         titleFlex,
         centerFlex,
-        imageSize,
+        loadingImageSize,
+        errorImageSize,
+        imageWidth,
+        imageHeight,
         priceFlex,
     } = getStyle(size);
     //const renderCount = useRef(1);
@@ -66,13 +74,32 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
             <Center flex={centerFlex}>
                 {imageLoading && (
                     <Image
-                        source={require("../../assets/images/question_document_icon256.png")}
-                        size={imageSize}
-                        alt="placeholder"
+                        source={require("../../assets/images/loading.gif")}
+                        size={loadingImageSize}
+                        alt="loading..."
                         style={{ position: "absolute" }}
                     />
                 )}
-                <Image
+                {imageError && (
+                    <Image
+                        source={require("../../assets/images/default_nft_icon256.png")}
+                        size={errorImageSize}
+                        alt="defaultImage"
+                        style={{ position: "absolute" }}
+                    />
+                )}
+                <FastImage
+                    style={{ width: imageWidth, height: imageHeight }}
+                    source={{
+                        uri: imgSource,
+                    }}
+                    onLoadStart={() => setImageLoading(true)}
+                    onError={() => setImageError(true)}
+                    onLoadEnd={() => setImageLoading(false)}
+                    key={imageUrl}
+                    alt="nft image"
+                />
+                {/* <Image
                     fallbackSource={{ uri: DEFAULT_NFT_IMAGE }}
                     source={{
                         uri: imgSource,
@@ -82,8 +109,8 @@ function NFTCard({ title, imageUrl, contractAddress, size }) {
                     onLoadEnd={() => setImageLoading(false)}
                     key={imageUrl}
                     alt="missing image"
-                    size={imageSize}
-                />
+                    size={loadingImageSize}
+                /> */}
             </Center>
 
             <Text fontSize={fontSize} flex={priceFlex} px={textPx}>

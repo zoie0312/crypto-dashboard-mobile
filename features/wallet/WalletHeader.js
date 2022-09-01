@@ -36,7 +36,7 @@ function WalletHeader({ navigation, address, chain }) {
     return (
         <VStack my="3">
             <HStack alignItems="center" justifyContent="space-between">
-                <ChevronLeftIcon size="7" m="5" onPress={goBack} flex="1"/>
+                <ChevronLeftIcon size="7" m="5" onPress={goBack} flex="1" />
                 <Heading isTruncated size="sm" flex="7">
                     {address}
                 </Heading>

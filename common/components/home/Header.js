@@ -1,4 +1,5 @@
-import { HStack, Center, Text, ThreeDotsIcon } from "native-base";
+import { Entypo } from "@expo/vector-icons";
+import { HStack, Center, Text } from "native-base";
 import React from "react";
 
 const Header = ({ navigation, ...props }) => {
@@ -11,13 +12,15 @@ const Header = ({ navigation, ...props }) => {
             my="3"
         >
             <Text fontSize="3xl" fontWeight="500">
-                My Portfolio
+                M Portfolio
             </Text>
 
             <Center size="8" bg="trueGray.200" borderRadius="20">
-                <ThreeDotsIcon
-                    size="sm"
-                    onPress={() => navigation.navigate("WalletDetail")}
+                <Entypo
+                    name="dots-three-horizontal"
+                    size={16}
+                    color="black"
+                    onPress={() => navigation.navigate("Setting")}
                 />
             </Center>
         </HStack>
