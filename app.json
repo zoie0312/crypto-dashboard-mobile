@@ -2,7 +2,7 @@
     "expo": {
       "name": "crypto-dashboard",
       "slug": "crypto-dashboard",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "orientation": "portrait",
       "icon": "./assets/images/icon.png",
       "userInterfaceStyle": "light",
@@ -29,7 +29,7 @@
           "backgroundColor": "#FFFFFF"
         },
         "package": "com.url.young.zoie.cryptoDashboard",
-        "versionCode": 2
+        "versionCode": 3
       },
       "androidStatusBar": {
         "barStyle": "dark-content",

@@ -12,7 +12,7 @@ const Header = ({ navigation, ...props }) => {
             my="3"
         >
             <Text fontSize="3xl" fontWeight="500">
-                M Portfolio
+                My Portfolio
             </Text>
 
             <Center size="8" bg="trueGray.200" borderRadius="20">
